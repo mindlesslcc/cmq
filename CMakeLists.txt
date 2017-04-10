@@ -6,7 +6,7 @@ include_directories (
     )
 
 add_executable (mq
-    src/mq.cpp
+    mq/mq.cpp
     )
 
 target_link_libraries( 
