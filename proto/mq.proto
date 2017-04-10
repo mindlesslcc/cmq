@@ -1,0 +1,59 @@
+syntax="proto3";
+
+package mq;
+
+enum Status
+{
+    ok = 0;
+    notok = 1;
+}
+
+message PutRequest
+{
+    string topic = 1;
+    string message = 2;
+}
+
+message PutResponse
+{
+    Status status = 1;
+}
+
+message GetRequest
+{
+    string topic = 1;
+}
+
+message GetResponse
+{
+    Status status = 1;
+    string message = 2;
+}
+
+message SubscribeRequest
+{
+    string topic = 1;
+}
+
+message SubscribeResponse
+{
+    Status status = 1;
+}
+
+message PublishRequest
+{
+    string topic = 1;
+    string message = 2;
+}
+
+message PublishResponse
+{
+    Status status = 1;
+}
+
+service mq {
+    rpc Put (PutRequest) returns (PutResponse);
+    rpc Get (GetRequest) returns (GetResponse);
+    rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
+    rpc Publish (PublishRequest) returns (PublishResponse);
+}
