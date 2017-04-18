@@ -13,7 +13,7 @@ CC = g++
 
 all: bin/mq bin/test
 
-bin/mq: proto/mq.grpc.pb.o proto/mq.pb.o mq/mq.o
+bin/mq: proto/mq.grpc.pb.o proto/mq.pb.o mq/mq_server.o
 	$(CC) $^ `pkg-config --libs grpc++ grpc` -lgrpc++_reflection -ldl -lprotobuf -lpthread -o $@
 
 bin/test: proto/mq.grpc.pb.o proto/mq.pb.o test/test.o

@@ -12,10 +12,6 @@ namespace mq {
 
 class MessageQueue
 {
-    std::mutex _m;
-    std::condition_variable _c;
-    typedef std::queue<std::shared_ptr<mq::Message>> queue;
-    std::unordered_map<std::string, queue> _mq;
 public:
     MessageQueue(): _m(), _c(), _mq()
     {}
@@ -35,6 +31,11 @@ public:
         _mq[topic].pop();
         return res;
     }
+private:
+    std::mutex _m;
+    std::condition_variable _c;
+    typedef std::queue<std::shared_ptr<Message>> queue;
+    std::unordered_map<std::string, queue> _mq;
 };
 
 }
