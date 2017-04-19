@@ -11,16 +11,19 @@ using grpc::ClientContext;
 using grpc::Status;
 using mq::PutRequest;
 using mq::PutResponse;
+using mq::GetRequest;
+using mq::GetResponse;
 
 class MQClient {
  public:
   MQClient(std::shared_ptr<Channel> channel)
       : stub_(mq::mq::NewStub(channel)) {}
 
-  std::string Put(const std::string& topic) {
+  std::string Put(const std::string& topic, const std::string &message) {
     // Data we are sending to the server.
     PutRequest req;
     req.set_topic(topic);
+    req.set_message(message);
     PutResponse resp;
     ClientContext context;
 
@@ -37,20 +40,41 @@ class MQClient {
     }
   }
 
+    std::string Get(const std::string& topic, const std::string *message) {
+        // Data we are sending to the server.
+        GetRequest req;
+        req.set_topic(topic);
+        GetResponse resp;
+        ClientContext context;
+
+        // The actual RPC.
+        Status status = stub_->Get(&context, req, &resp);
+
+        // Act upon its status.
+        if (status.ok()) {
+            return resp.message();
+        } else {
+            std::cout << status.error_code() << ": " << status.error_message()
+                << std::endl;
+            return "RPC failed";
+        }
+    }
+
  private:
   std::unique_ptr<mq::mq::Stub> stub_;
 };
 
 int main(int argc, char** argv) {
-  // Instantiate the client. It requires a channel, out of which the actual RPCs
-  // are created. This channel models a connection to an endpoint (in this case,
-  // localhost at port 50051). We indicate that the channel isn't authenticated
-  // (use of InsecureChannelCredentials()).
   MQClient mq(grpc::CreateChannel(
       "localhost:50051", grpc::InsecureChannelCredentials()));
-  std::string user("world");
-  std::string reply = mq.Put(user);
-  std::cout << "Greeter received: " << reply << std::endl;
+  std::string topic("topic");
+  std::string message("message");
+  std::string reply = mq.Put(topic, message);
+  std::cout << "put message" << reply << std::endl;
+
+    //get message
+    mq.Get(topic, &message);
+    std::cout<<"get message" << message <<std::endl;
 
   return 0;
 }

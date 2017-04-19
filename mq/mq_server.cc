@@ -24,21 +24,28 @@ using mq::PublishResponse;
 class MQServiceImpl final : public mq::mq::Service {
 public:
     Status Put(ServerContext* context, const PutRequest* request,
-                  PutResponse* reply) override {
-        reply->set_status(mq::ok);
-        return Status::OK;
+                  PutResponse* response) override {
+        response->set_status(mq::ok);
+        return _mq.put(request->topic(), request->message());
+        //return Status::OK;
     }
     Status Get(ServerContext* context, const GetRequest* request, GetResponse* response) {
+        std::string message;
+        _mq.get(request->topic(), &message);
+        response->set_status(mq::ok);
+        response->set_message(message);
         return Status::OK;
     }
     Status Subscribe(ServerContext* context, const SubscribeRequest* request, SubscribeResponse* response) {
+        response->set_status(mq::ok);
         return Status::OK;
     }
     Status Publish(ServerContext* context, const PublishRequest* request, PublishResponse* response) {
+        response->set_status(mq::ok);
         return Status::OK;
     }
 private:
-
+    mq::MessageQueue _mq;
 };
 
 void RunServer() {
