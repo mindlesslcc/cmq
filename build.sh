@@ -10,13 +10,13 @@ FLAG_DIR=`pwd`/.build
 export PATH=${DEPS_PREFIX}/bin:$PATH
 mkdir -p ${DEPS_SOURCE} ${DEPS_PREFIX} ${FLAG_DIR}
 
-if [ ! -f "${FLAG_DIR}/dl_third" ] || [ ! -d "${DEPS_SOURCE}/.git" ]; then
+if [ ! -f "${DEPS_SOURCE}/CMake-3.2.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gflags-2.1.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gtest-1.7.0.tar.gz" ] || [ ! -f ${DEPS_SOURCE}/protobuf-3.2.0.tar.gz ] ; then
     rm -rf ${DEPS_SOURCE}
     mkdir ${DEPS_SOURCE}
     cd ${DEPS_SOURCE}
-    git clone https://github.com/mindlesslcc/mq-thirdsrc.git
-    mv mq-thirdsrc/* .
-    rm -rf mq-thirdsrc
+    git clone https://github.com/mindlesslcc/mq-thirdsrc.git .third
+    mv .third/* .
+    rm -rf .third
     tar -zxvf CMake-3.2.1.tar.gz
     tar -zxvf gflags-2.1.1.tar.gz
     tar -zxvf gtest-1.7.0.tar.gz
@@ -72,6 +72,14 @@ if [ ! -f "${FLAG_DIR}/gtest-1.7.0" ] \
 fi
 
 cd ${WORK_DIR}
+
+# create depends.mk
+
+echo "PROTOBUF_PATH=./thirdparty" >> depends.mk
+echo "PROTOC_PATH=./thirdparty/bin/" >> depends.mk
+echo 'PROTOC=$(PROTOC_PATH)protoc' >> depends.mk
+echo "GFLAG_PATH=./thirdparty" >> depends.mk
+echo "GTEST_PATH=./thirdparty" >> depends.mk
 
 # build
 
