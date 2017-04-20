@@ -1,1 +1,3 @@
-Shared Message Queue
+Distributed Message Queue
+
+
