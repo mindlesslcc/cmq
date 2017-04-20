@@ -34,9 +34,10 @@ MQ_HEADER = $(wildcard src/mq/*.h)
 
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 TEST_OBJ = $(patsubst %.cc, %.o, $(wildcard src/test/*.cc))
-UTIL_OJB = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
+UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
+BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
-BIN = $(BINDIR)/mq $(BINDIR)/mq_test
+BIN = $(BINDIR)/mq $(BINDIR)/mq_test $(BINDIR)/benchmark
 
 TESTS = mq_test
 $(info, $(PROTO_OBJ))
@@ -50,6 +51,9 @@ $(BINDIR)/mq: $(PROTO_OBJ) $(MQ_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 %.pb.h %.pb.cc : %.proto
