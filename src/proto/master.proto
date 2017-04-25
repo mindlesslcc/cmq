@@ -1,0 +1,29 @@
+syntax="proto3";
+import "common.proto";
+package mq;
+
+message SubscribeRequest
+{
+    string topic = 1;
+}
+
+message SubscribeResponse
+{
+    Status status = 1;
+}
+
+message PublishRequest
+{
+    string topic = 1;
+    string message = 2;
+}
+
+message PublishResponse
+{
+    Status status = 1;
+}
+
+service mq {
+    rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
+    rpc Publish (PublishRequest) returns (PublishResponse);
+}

@@ -35,19 +35,25 @@ BROKER_SRC = $(wildcard src/broker/*.cc)
 BROKER_OBJ = $(patsubst %.cc, %.o, $(BROKER_SRC))
 BROKER_HEADER = $(wildcard src/broker/*.h)
 
+MASTER_SRC = $(wildcard src/master/*.cc)
+MASTER_OBJ = $(patsubst %.cc, %.o, $(MASTER_SRC))
+MASTER_HEADER = $(wildcard src/master/*.h)
+
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 TEST_OBJ = $(patsubst %.cc, %.o, $(wildcard src/test/*.cc))
 UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
-BIN = $(BINDIR)/broker
+BIN = $(BINDIR)/broker $(BINDIR)/master
 
 .PHONY:all
 
 all: $(PROTO) $(BIN)
-	echo $(PROTO_OBJ)
 
 $(BINDIR)/broker: $(PROTO_OBJ) $(BROKER_OBJ)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/master: $(PROTO_OBJ) $(MASTER_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
@@ -63,7 +69,6 @@ $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 %.o:%.cc
-	@echo compiling $< to $@
 	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG) $(LDFLAGS) -c $< -o $@
 
 clean:
