@@ -1,0 +1,9 @@
+syntax="proto3";
+
+package mq;
+
+enum Status
+{
+    ok = 0;
+    notok = 1;
+}

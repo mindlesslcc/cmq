@@ -1,5 +1,5 @@
-#ifndef _MQ_H
-#define _MQ_H
+#ifndef _BROKER_H
+#define _BROKER_H
 
 #include "message.h"
 
@@ -13,10 +13,10 @@
 
 namespace mq {
 
-class MessageQueue
+class Messages
 {
 public:
-    MessageQueue(): _m(), _c(), _mq()
+    Messages(): _m(), _c(), _mq()
     {}
 
     grpc::Status put(std::string topic, std::string message);

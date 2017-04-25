@@ -9,7 +9,7 @@ include depends.mk
 
 ROOTDIR = $(shell pwd)
 BINDIR  = $(ROOTDIR)/bin
-INCLUDE_FLAG = -I./src -I./include -I.
+INCLUDE_FLAG = -I./src -I./include -I. -I./src/proto
 LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
 		  -L$(GTEST_PATH)/lib -lgtest \
@@ -20,7 +20,10 @@ SRCOBJS = $(patsubst %.cc,%.o,$(SOURCES))
 CXX=g++
 CXXFLAGS = -std=c++11 -Wall $(OPT)
 
-PROTO_FILE = $(wildcard src/proto/*.proto)
+GRPC_CPP_PLUGIN = grpc_cpp_plugin
+GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
+PROTOS_PATH = ./src/proto
+PROTO_FILE = src/proto/common.proto src/proto/broker.proto src/proto/master.proto
 PROTO_SRC = $(patsubst %.proto,%.pb.cc,$(PROTO_FILE)) 
 PROTO_SRC += $(patsubst %.proto,%.grpc.pb.cc,$(PROTO_FILE))
 PROTO_HEADER = $(patsubst %.proto,%.pb.h,$(PROTO_FILE))
@@ -28,26 +31,23 @@ PROTO_HEADER += $(patsubst %.proto,%.grpc.pb.h,$(PROTO_FILE))
 PROTO_OBJ = $(patsubst %.proto,%.pb.o,$(PROTO_FILE))
 PROTO_OBJ += $(patsubst %.proto,%.grpc.pb.o,$(PROTO_FILE))
 
-MQ_SRC = $(wildcard src/mq/*.cc)
-MQ_OBJ = $(patsubst %.cc, %.o, $(MQ_SRC))
-MQ_HEADER = $(wildcard src/mq/*.h)
+BROKER_SRC = $(wildcard src/broker/*.cc)
+BROKER_OBJ = $(patsubst %.cc, %.o, $(BROKER_SRC))
+BROKER_HEADER = $(wildcard src/broker/*.h)
 
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 TEST_OBJ = $(patsubst %.cc, %.o, $(wildcard src/test/*.cc))
 UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
-BIN = $(BINDIR)/mq $(BINDIR)/mq_test $(BINDIR)/benchmark
-
-TESTS = mq_test
-$(info, $(PROTO_OBJ))
+BIN = $(BINDIR)/broker
 
 .PHONY:all
 
 all: $(PROTO) $(BIN)
 	echo $(PROTO_OBJ)
 
-$(BINDIR)/mq: $(PROTO_OBJ) $(MQ_OBJ)
+$(BINDIR)/broker: $(PROTO_OBJ) $(BROKER_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
@@ -56,16 +56,14 @@ $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-%.pb.h %.pb.cc : %.proto
-	$(PROTOC) --cpp_out=. ./src/proto/mq.proto
-	$(PROTOC) --grpc_out=. --plugin=protoc-gen-grpc=/usr/local/bin/grpc_cpp_plugin ./src/proto/mq.proto
+%.grpc.pb.cc: %.proto
+	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
+
+%.pb.cc: %.proto
+	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 %.o:%.cc
-	@echo $< $@
-	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG) $(LDFLAGS) -c $< -o $@
-
-src/proto/mq.grpc.pb.o:src/proto/mq.grpc.pb.cc
-	@echo $< $@
+	@echo compiling $< to $@
 	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG) $(LDFLAGS) -c $< -o $@
 
 clean:
