@@ -23,7 +23,31 @@ message PublishResponse
     Status status = 1;
 }
 
+message RegisterRequest
+{
+    string ip = 1;
+    int32 port = 2;
+}
+
+message RegisterResponse
+{
+    Status status = 1;
+}
+
+message UnRegisterRequest
+{
+    string ip = 1;
+    int32 port = 2;
+}
+
+message UnRegisterResponse
+{
+    Status status = 1;
+}
+
 service mq {
     rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
     rpc Publish (PublishRequest) returns (PublishResponse);
+    rpc Register (RegisterRequest) returns (RegisterResponse);
+    rpc UnRegister (UnRegisterRequest) returns (UnRegisterResponse);
 }
