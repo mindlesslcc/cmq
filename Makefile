@@ -46,19 +46,15 @@ BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
 BIN = $(BINDIR)/broker $(BINDIR)/master
 
-# Headers Depends
-$(BROKER_OBJ) $(MASTER_OBJ) : $(PROTO_HEADER)
-$(BROKER_OBJ): $(BROKER_HEADER)
-$(MASTER_OBJ): $(MASTER_HEADER)
-
 .PHONY:all
 
-all: $(PROTO) $(BIN)
+all: $(BIN)
 
-$(BINDIR)/broker: $(PROTO_OBJ) $(BROKER_OBJ)
+$(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/master: $(PROTO_OBJ) $(MASTER_OBJ)
+$(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ)
+	echo $(MASTER_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
@@ -66,6 +62,11 @@ $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
 
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
+
+# Headers Depends
+$(BROKER_OBJ) $(MASTER_OBJ) : $(PROTO_HEADER)
+$(BROKER_OBJ): $(BROKER_HEADER)
+$(MASTER_OBJ): $(MASTER_HEADER)
 
 %.grpc.pb.h %.grpc.pb.cc: %.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
@@ -80,7 +81,7 @@ clean:
 	find . -name "*.o" | xargs rm -f
 	find . -name "*.pb.h" | xargs rm -f
 	find . -name "*.pb.cc" | xargs rm -f
-	rm -f bin/mq
+	rm -f bin/*
 
 test:
 	echo "test OK"
