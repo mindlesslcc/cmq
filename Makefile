@@ -46,6 +46,11 @@ BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
 BIN = $(BINDIR)/broker $(BINDIR)/master
 
+# Headers Depends
+$(BROKER_OBJ) $(MASTER_OBJ) : $(PROTO_HEADER)
+$(BROKER_OBJ): $(BROKER_HEADER)
+$(MASTER_OBJ): $(MASTER_HEADER)
+
 .PHONY:all
 
 all: $(PROTO) $(BIN)
@@ -62,10 +67,10 @@ $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-%.grpc.pb.cc: %.proto
+%.grpc.pb.h %.grpc.pb.cc: %.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=$(PROTOS_PATH) --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
 
-%.pb.cc: %.proto
+%.pb.cc %.pb.h: %.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 %.o:%.cc
