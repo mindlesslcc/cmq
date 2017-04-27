@@ -19,6 +19,7 @@ namespace mq {
 
 class BrokerServiceImpl final : public broker::Service {
 public:
+    ~BrokerServiceImpl() {}
     ::grpc::Status Put(ServerContext* context, const PutRequest* request,
                   PutResponse* response) override;
     ::grpc::Status Get(ServerContext* context, const GetRequest* request, GetResponse* response) override;

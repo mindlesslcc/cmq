@@ -3,6 +3,13 @@ import "common.proto";
 
 package mq;
 
+message BrokerInfo
+{
+    string ip = 1;
+    int32 port = 2;
+    ServerStatus status = 3;
+}
+
 message PutRequest
 {
     string topic = 1;

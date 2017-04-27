@@ -4,6 +4,12 @@ package mq;
 
 enum Status
 {
-    ok = 0;
-    notok = 1;
+    s_ok = 0;
+    s_notok = 1;
+}
+
+enum ServerStatus
+{
+    ss_running = 0;
+    ss_unresponsive = 1;
 }
