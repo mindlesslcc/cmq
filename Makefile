@@ -9,7 +9,7 @@ include depends.mk
 
 ROOTDIR = $(shell pwd)
 BINDIR  = $(ROOTDIR)/bin
-INCLUDE_FLAG = -I./src -I./include -I. -I./src/proto
+INCLUDE_FLAG = -I./src -I./include -I. -I./src/proto -I$(BOOST_PATH)
 LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
 		  -L$(GTEST_PATH)/lib -lgtest \
