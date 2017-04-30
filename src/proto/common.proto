@@ -6,6 +6,7 @@ enum Status
 {
     s_ok = 0;
     s_notok = 1;
+    s_notfind = 2;
 }
 
 enum ServerStatus
