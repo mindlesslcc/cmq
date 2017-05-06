@@ -1,8 +1,6 @@
 #ifndef _BROKER_H
 #define _BROKER_H
 
-#include "message.h"
-
 #include <grpc++/grpc++.h>
 
 #include <mutex>
@@ -12,6 +10,16 @@
 #include <memory>
 
 namespace mq {
+
+struct Message
+{
+public:
+    std::string content;
+    std::string topic;
+    explicit Message() : content(""),topic("") {}
+    explicit Message(const Message &m) : content(m.content), topic(m.topic) {} 
+    explicit Message(const std::string t, const std::string v) : content(v), topic(t) {}
+};
 
 class Messages
 {

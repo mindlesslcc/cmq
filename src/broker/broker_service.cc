@@ -27,8 +27,8 @@ namespace mq {
 ::grpc::Status BrokerServiceImpl::Put(ServerContext* context, const PutRequest* request,
               PutResponse* response) {
     response->set_status(mq::s_ok);
-    return _mq.put(request->topic(), request->message());
-    //return Status::OK;
+    _mq.put(request->topic(), request->message());
+    return ::grpc::Status::OK;
 }
 
 ::grpc::Status BrokerServiceImpl::Get(ServerContext* context, const GetRequest* request, GetResponse* response) {

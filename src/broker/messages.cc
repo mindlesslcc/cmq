@@ -11,16 +11,14 @@ namespace mq {
 grpc::Status Messages::put(std::string topic, std::string message) {
     std::lock_guard<std::mutex> lk(_m);
     _mq[topic] = message;
-    return grpc::Status::OK;
+    return ::grpc::Status::OK;
 }
 
 grpc::Status Messages::get(std::string topic, std::string *message) {
     std::lock_guard<std::mutex> lk(_m);
     *message = _mq[topic];
     _mq.erase(topic);
-    return grpc::Status::OK;
+    return ::grpc::Status::OK;
 }
 
 }
-
-
