@@ -1,6 +1,8 @@
 #ifndef _MASTER_SERVICE_H
 #define _MASTER_SERVICE_H
 
+#include "broker_manager.h"
+
 #include <iostream>
 #include <thread>
 #include <memory>
@@ -26,6 +28,7 @@ public:
     ::grpc::Status Register(ServerContext* context, const RegisterRequest* request, RegisterResponse* response) override;
     ::grpc::Status UnRegister(ServerContext* context, const UnRegisterRequest* request, UnRegisterResponse* response) override;
 private:
+    BrokerManager *_brokers;
 };
 
 }

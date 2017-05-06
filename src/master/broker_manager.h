@@ -16,8 +16,8 @@
 namespace mq {
 class BrokerManager {
 public:
-    Status RegisterBroker(std::string ip, int32_t port);
-    Status UnRegisterBroker(std::string ip, int32_t port);
+    Status AddBroker(std::string ip, int32_t port);
+    Status DeleteBroker(std::string ip, int32_t port);
 private:
     std::map<int32_t, BrokerInfo*> _brokers;
 };

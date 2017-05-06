@@ -15,7 +15,7 @@
 
 namespace mq {
 
-Status BrokerManager::RegisterBroker(std::string ip, int32_t port) {
+Status BrokerManager::AddBroker(std::string ip, int32_t port) {
     //get hash for server
     uint32_t hash;
     char address[30];
@@ -33,7 +33,7 @@ Status BrokerManager::RegisterBroker(std::string ip, int32_t port) {
     return s_ok;
 }
 
-Status BrokerManager::UnRegisterBroker(std::string ip, int32_t port) {
+Status BrokerManager::DeleteBroker(std::string ip, int32_t port) {
     //find hash for server
     uint32_t hash;
     char address[30];
