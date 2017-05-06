@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <iostream>
 #include <thread>
 #include <memory>
@@ -9,6 +10,16 @@
 
 #include "messages.h"
 #include "broker_service.h"
+
+DECLARE_string(flagfile);
+
+static std::string UsageString = "./broker conf.flag";
+
+static volatile sig_atomic_t gQuit = 0;
+static void SignalIntHandler(int sig)
+{
+    gQuit = 1;
+}
 
 void RunServer() {
   std::string server_address("0.0.0.0:50051");
@@ -28,12 +39,21 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
+    if (FLAGS_flagfile == "") {
+        FLAGS_flagfile = "./bfs.flag";
+    }
+
     //parse flags
-    google::SetVersionString("1.0.0.0");
-    google::SetUsageMessage("Usage : ./mq ");
+    google::SetVersionString("0.1");
+    google::SetUsageMessage(UsageString);
     google::ParseCommandLineFlags(&argc, &argv, true);
-    std::cout<<FLAGS_servers<<std::endl;
     RunServer();
 
+    //signal
+    signal(SIGINT, SignalIntHandler);
+    signal(SIGTERM, SignalIntHandler);
+    while (!gQuit) {
+        usleep(1000);
+    }
     return 0;
 }
