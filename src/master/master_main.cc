@@ -11,10 +11,14 @@
 
 #include "master_service.h"
 
-DEFINE_string(servers,"127.0.0.1", "servers");
+DECLARE_string(flagfile);
+DEFINE_string(master,"127.0.0.1:10000", "servers");
+DEFINE_string(server,"127.0.0.1:10001", "servers");
+
+static std::string UsageString = "./broker conf.flag";
 
 void RunServer() {
-  std::string server_address("0.0.0.0:50051");
+  std::string server_address(FLAGS_master);
   mq::MasterServiceImpl service;
 
   ServerBuilder builder;
@@ -31,11 +35,14 @@ void RunServer() {
 }
 
 int main(int argc, char** argv) {
+    if (FLAGS_flagfile == "") {
+        FLAGS_flagfile = "conf/mq.conf";
+    }
+
     //parse flags
-    google::SetVersionString("1.0.0.0");
-    google::SetUsageMessage("Usage : ./mq ");
+    google::SetVersionString("1.0");
+    google::SetUsageMessage(UsageString);
     google::ParseCommandLineFlags(&argc, &argv, true);
-    std::cout<<FLAGS_servers<<std::endl;
     RunServer();
 
     return 0;

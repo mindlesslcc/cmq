@@ -42,7 +42,7 @@ void RunServer() {
 
 int main(int argc, char** argv) {
     if (FLAGS_flagfile == "") {
-        FLAGS_flagfile = "./bfs.flag";
+        FLAGS_flagfile = "conf/mq.conf";
     }
 
     //parse flags
