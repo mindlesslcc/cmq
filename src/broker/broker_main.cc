@@ -12,6 +12,8 @@
 #include "broker_service.h"
 
 DECLARE_string(flagfile);
+DEFINE_string(master, "127.0.0.1:10000", "message queue server master ip port");
+DEFINE_string(server, "127.0.0.1:10001", "message queue server ip port");
 
 static std::string UsageString = "./broker conf.flag";
 

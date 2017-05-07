@@ -8,6 +8,7 @@
 #include "proto/broker.grpc.pb.h"
 
 #include "messages.h"
+#include "master_client.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -19,11 +20,15 @@ namespace mq {
 
 class BrokerServiceImpl final : public broker::Service {
 public:
-    ~BrokerServiceImpl() {}
+    BrokerServiceImpl();
+    ~BrokerServiceImpl();
     ::grpc::Status Put(ServerContext* context, const PutRequest* request,
                   PutResponse* response) override;
     ::grpc::Status Get(ServerContext* context, const GetRequest* request, GetResponse* response) override;
 private:
+    Status Register();
+    
+    MasterClient *_master_client;
     Messages _mq;
 };
 

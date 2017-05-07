@@ -44,7 +44,7 @@ CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
-TEST = $(BINDIR)/messages_test $(BINDIR)/broker_service_test
+TEST = $(BINDIR)/messages_test
 TEST_OBJ = src/broker/messages.o
 
 BIN = $(BINDIR)/broker $(BINDIR)/master
@@ -67,9 +67,6 @@ $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o $(TEST_OBJ) $(PROTO_OBJ)
-	$(CXX) $^ $(LDFLAGS) -o $@
-
-$(BINDIR)/broker_service_test : $(TESTDIR)/broker_service_test.o  src/broker/broker_service.o  src/broker/messages.o  $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 # Headers Depends
