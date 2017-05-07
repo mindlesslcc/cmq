@@ -30,6 +30,7 @@ BrokerServiceImpl::BrokerServiceImpl() {
     _master_client = new MasterClient(grpc::CreateChannel(
       FLAGS_master, grpc::InsecureChannelCredentials()));
 
+    Register();
 }
 
 BrokerServiceImpl::~BrokerServiceImpl() {

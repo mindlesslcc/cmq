@@ -24,6 +24,7 @@ namespace mq {
 }
 
 ::grpc::Status MasterServiceImpl::Register(ServerContext* context, const RegisterRequest* request, RegisterResponse* response) {
+    std::cout<<"i will register"<<std::endl;
     //check args
     std::string ip = request->ip();
     int32_t port = request->port();

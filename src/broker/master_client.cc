@@ -4,7 +4,11 @@
 #include <memory>
 #include <string>
 
+#include <gflags/gflags.h>
+
 #include <grpc++/grpc++.h>
+
+DECLARE_string(master);
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -23,6 +27,7 @@ Status MasterClient::Register(const std::string& ip, const int32_t port) {
     RegisterResponse resp;
     ClientContext context;
 
+    std::cout<<"register to master"<<FLAGS_master<<std::endl;
     // The actual RPC.
     ::grpc::Status status = stub_->Register(&context, req, &resp);
 

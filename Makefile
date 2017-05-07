@@ -15,11 +15,11 @@ LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
 		  -L$(GTEST_PATH)/lib -lgtest \
 		  `pkg-config --libs grpc++ grpc` \
-		  -lgrpc++_reflection -ldl -lprotobuf -lpthread 
+		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread 
 SOURCES = $(wildcard $(subdir)*.cc)
 SRCOBJS = $(patsubst %.cc,%.o,$(SOURCES))
 CXX=g++
-CXXFLAGS = -std=c++11 -Wall $(OPT)
+CXXFLAGS = -g -std=c++11 -Wall $(OPT)
 
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
@@ -44,7 +44,7 @@ CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
-TEST = $(BINDIR)/messages_test
+TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test
 TEST_OBJ = src/broker/messages.o
 
 BIN = $(BINDIR)/broker $(BINDIR)/master
@@ -66,7 +66,10 @@ $(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/messages_test : $(TESTDIR)/messages_test.o $(TEST_OBJ) $(PROTO_OBJ)
+$(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PROTO_OBJ)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/broker_manager_test : $(TESTDIR)/broker_manager_test.o src/master/broker_manager.o $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 # Headers Depends

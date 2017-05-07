@@ -14,6 +14,7 @@
 #include "broker.pb.h"
 
 namespace mq {
+
 class BrokerManager {
 public:
     Status AddBroker(std::string ip, int32_t port);
@@ -21,6 +22,7 @@ public:
 private:
     std::map<int32_t, BrokerInfo*> _brokers;
 };
+
 }
 
 #endif
