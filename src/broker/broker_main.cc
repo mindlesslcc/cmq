@@ -7,6 +7,7 @@
 #include <grpc++/grpc++.h>
 
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 #include "messages.h"
 #include "broker_service.h"
@@ -49,6 +50,9 @@ int main(int argc, char** argv) {
     google::SetVersionString("0.1");
     google::SetUsageMessage(UsageString);
     google::ParseCommandLineFlags(&argc, &argv, true);
+
+    LOG(INFO) << "broker "<<FLAGS_server<<" Starting.!";
+
     RunServer();
 
     //signal
@@ -57,5 +61,8 @@ int main(int argc, char** argv) {
     while (!gQuit) {
         usleep(1000);
     }
+
+    LOG(INFO) << "broker "<<FLAGS_server<<" Existing.!";
+
     return 0;
 }

@@ -10,7 +10,7 @@ FLAG_DIR=`pwd`/.build
 export PATH=${DEPS_PREFIX}/bin:$PATH
 mkdir -p ${DEPS_SOURCE} ${DEPS_PREFIX} ${FLAG_DIR}
 
-if [ ! -f "${DEPS_SOURCE}/CMake-3.2.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gflags-2.1.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gtest-1.7.0.tar.gz" ] || [ ! -f ${DEPS_SOURCE}/protobuf-3.2.0.tar.gz ] || [ ! -f "${DEPS_SOURCE}/boost_1_54_0.tar.bz2" ] ; then
+if [ ! -f "${DEPS_SOURCE}/CMake-3.2.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gflags-2.1.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gtest-1.7.0.tar.gz" ] || [ ! -f ${DEPS_SOURCE}/protobuf-3.2.0.tar.gz ] || [ ! -f "${DEPS_SOURCE}/boost_1_54_0.tar.bz2" ] || [ ! -f "${DEPS_SOURCE}/glog-0.3.4.tar.gz" ] ; then
     rm -rf ${DEPS_SOURCE}
     rm -rf ${DEPS_PREFIX}
     mkdir ${DEPS_SOURCE}
@@ -25,6 +25,7 @@ if [ ! -f "${DEPS_SOURCE}/CMake-3.2.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gflags
     tar -zxvf gflags-2.1.1.tar.gz
     tar -zxvf gtest-1.7.0.tar.gz
     tar -zxvf protobuf-3.2.0.tar.gz
+    tar -zxvf glog-0.3.4.tar.gz
     touch "${FLAG_DIR}/dl_third"
 fi
 
@@ -69,14 +70,28 @@ if [ ! -f "${FLAG_DIR}/gtest-1.7.0" ] \
     cd gtest-1.7.0
     ./configure ${DEPS_CONFIG}
     make
-    cp -a lib/.libs/* ${DEPS_PREFIX}/lib
-    cp -a include/gtest ${DEPS_PREFIX}/include
+    cp -a lib/.libs/* ${DEPS_PREFIX}/lib -f
+    cp -a include/gtest ${DEPS_PREFIX}/include -f
     cd -
     touch "${FLAG_DIR}/gtest_1_7_0"
 fi
 
-#boost
-cp thirdsrc/boost_1_54_0/boost ${DEPS_PREFIX}/boost -rf
+# boost
+pwd
+cp boost_1_54_0/boost ${DEPS_PREFIX}/boost -rf
+
+# glog
+if [ ! -f "${FLAG_DIR}/glog-0.3.4" ] \
+    || [ ! -f "${DEPS_PREFIX}/lib/libglog.a" ] \
+    || [ ! -d "${DEPS_PREFIX}/include/glog" ]; then
+    cd glog-0.3.4
+    ./configure ${DEPS_CONFIG}
+    make
+    make install
+    cd -
+    touch "${FLAG_DIR}/glog-0.3.4"
+fi
+
 
 cd ${WORK_DIR}
 
@@ -88,6 +103,7 @@ echo 'PROTOC=$(PROTOC_PATH)protoc' >> depends.mk
 echo "GFLAG_PATH=./thirdparty" >> depends.mk
 echo "GTEST_PATH=./thirdparty" >> depends.mk
 echo "BOOST_PATH=./thirdparty" >> depends.mk
+echo "GLOG_PATH=./thirdparty" >> depends.mk
 
 # build
 

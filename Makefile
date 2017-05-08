@@ -15,7 +15,7 @@ LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
 		  -L$(GTEST_PATH)/lib -lgtest \
 		  `pkg-config --libs grpc++ grpc` \
-		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread 
+		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread -lglog 
 SOURCES = $(wildcard $(subdir)*.cc)
 SRCOBJS = $(patsubst %.cc,%.o,$(SOURCES))
 CXX=g++
