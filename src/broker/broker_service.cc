@@ -1,13 +1,14 @@
 #include "broker_service.h"
 
 #include <iostream>
+#include <sstream>
 #include <thread>
 #include <memory>
 #include <string>
 
 #include <grpc++/grpc++.h>
-
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 #include "proto/broker.grpc.pb.h"
 #include "messages.h"
@@ -30,6 +31,7 @@ BrokerServiceImpl::BrokerServiceImpl() {
     _master_client = new MasterClient(grpc::CreateChannel(
       FLAGS_master, grpc::InsecureChannelCredentials()));
 
+    LOG(INFO)<<"blockserver will register\n";
     Register();
 }
 
@@ -39,10 +41,17 @@ BrokerServiceImpl::~BrokerServiceImpl() {
 
 Status BrokerServiceImpl::Register() {
     // parse args
-    char ip[20];
+    std::string server = FLAGS_server;
     int port;
-    FLAGS_server = FLAGS_server;
-    sscanf(FLAGS_server.c_str(), "%s:%d", ip, &port);
+    std::string ip;
+    std::stringstream str;
+    
+    server = server.replace(server.find(":"), 1, " ");
+    str.str(server);
+    str>>ip;
+    str>>port;
+
+    LOG(INFO)<<ip<<":"<<port<<"register\n";
 
     // RPC Call.
     Status status = _master_client->Register(ip, port);

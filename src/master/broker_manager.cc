@@ -1,6 +1,5 @@
 #include "broker_manager.h"
 
-#include <stdlib.h>
 #include <iostream>
 #include <thread>
 #include <memory>
@@ -28,6 +27,7 @@ Status BrokerManager::AddBroker(std::string ip, int32_t port) {
     BrokerInfo* brokerInfo = new BrokerInfo;
     brokerInfo->set_ip(ip);
     brokerInfo->set_port(port);
+
     //insert hash
     _brokers[hash] = brokerInfo;
     return s_ok;

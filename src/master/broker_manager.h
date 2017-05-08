@@ -20,7 +20,7 @@ public:
     Status AddBroker(std::string ip, int32_t port);
     Status DeleteBroker(std::string ip, int32_t port);
 private:
-    std::map<int32_t, BrokerInfo*> _brokers;
+    std::map<uint32_t, BrokerInfo*> _brokers;
 };
 
 }

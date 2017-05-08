@@ -6,12 +6,15 @@
 #include <string>
 
 #include <grpc++/grpc++.h>
-
 #include <gflags/gflags.h>
+#include <glog/logging.h>
 
 #include "proto/master.grpc.pb.h"
 
 namespace mq {
+MasterServiceImpl::MasterServiceImpl() {
+    _brokers = new BrokerManager;
+}
 
 ::grpc::Status MasterServiceImpl::Subscribe(ServerContext* context, const SubscribeRequest* request, SubscribeResponse* response) {
     response->set_status(s_ok);
@@ -24,7 +27,6 @@ namespace mq {
 }
 
 ::grpc::Status MasterServiceImpl::Register(ServerContext* context, const RegisterRequest* request, RegisterResponse* response) {
-    std::cout<<"i will register"<<std::endl;
     //check args
     std::string ip = request->ip();
     int32_t port = request->port();
@@ -32,6 +34,9 @@ namespace mq {
         response->set_status(s_notok);
         return ::grpc::Status::OK;
     }
+
+    LOG(INFO)<<ip<<":"<<port<<"register\n";
+
     //add broker
     _brokers->AddBroker(ip, port);
     response->set_status(s_ok);
