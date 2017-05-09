@@ -14,7 +14,29 @@
 
 namespace mq {
 
-Status BrokerManager::AddBroker(std::string ip, int32_t port) {
+Status BrokerManager::FindBroker(const std::string &topic, BrokerInfo *brokerInfo) {
+    //get hash for server
+    uint32_t hash;
+    char address[30];
+    boost::crc_32_type crc32;
+    
+    sprintf(address, "%s", topic.c_str());
+    crc32.process_bytes(address, strlen(address));
+    hash = crc32();
+
+    std::map<uint32_t, std::shared_ptr<BrokerInfo>>::iterator itr = _brokers.lower_bound(hash);
+
+    if (itr != _brokers.end()) {
+        std::shared_ptr<mq::BrokerInfo> info = itr->second;
+        brokerInfo->set_ip(info->ip());
+        brokerInfo->set_port(info->port());
+        return s_ok;
+    }
+    std::cout<<"not end"<<std::endl;
+    return s_notfind;
+}
+
+Status BrokerManager::AddBroker(const std::string &ip, const int32_t &port) {
     //get hash for server
     uint32_t hash;
     char address[30];
@@ -24,7 +46,7 @@ Status BrokerManager::AddBroker(std::string ip, int32_t port) {
     crc32.process_bytes(address, strlen(address));
     hash = crc32();
  
-    BrokerInfo* brokerInfo = new BrokerInfo;
+    std::shared_ptr<BrokerInfo> brokerInfo = std::make_shared<BrokerInfo>();
     brokerInfo->set_ip(ip);
     brokerInfo->set_port(port);
 
@@ -33,7 +55,7 @@ Status BrokerManager::AddBroker(std::string ip, int32_t port) {
     return s_ok;
 }
 
-Status BrokerManager::DeleteBroker(std::string ip, int32_t port) {
+Status BrokerManager::DeleteBroker(const std::string &ip, const int32_t &port) {
     //find hash for server
     uint32_t hash;
     char address[30];

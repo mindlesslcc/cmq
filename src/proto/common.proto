@@ -2,6 +2,13 @@ syntax="proto3";
 
 package mq;
 
+message BrokerInfo
+{
+    string ip = 1;
+    int32 port = 2;
+    ServerStatus status = 3;
+}
+
 enum Status
 {
     s_ok = 0;

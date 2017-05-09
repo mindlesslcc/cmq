@@ -2,25 +2,15 @@ syntax="proto3";
 import "common.proto";
 package mq;
 
-message SubscribeRequest
+message GetBrokerRequest
 {
     string topic = 1;
 }
 
-message SubscribeResponse
+message GetBrokerResponse
 {
-    Status status = 1;
-}
-
-message PublishRequest
-{
-    string topic = 1;
-    string message = 2;
-}
-
-message PublishResponse
-{
-    Status status = 1;
+    BrokerInfo broker_info = 1;
+    Status status = 2;
 }
 
 message RegisterRequest
@@ -46,8 +36,7 @@ message UnRegisterResponse
 }
 
 service mq {
-    rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
-    rpc Publish (PublishRequest) returns (PublishResponse);
+    rpc GetBroker (GetBrokerRequest) returns (GetBrokerResponse);
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc UnRegister (UnRegisterRequest) returns (UnRegisterResponse);
 }

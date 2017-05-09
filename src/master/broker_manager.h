@@ -17,10 +17,11 @@ namespace mq {
 
 class BrokerManager {
 public:
-    Status AddBroker(std::string ip, int32_t port);
-    Status DeleteBroker(std::string ip, int32_t port);
+    Status FindBroker(const std::string &topic, BrokerInfo *);
+    Status AddBroker(const std::string &ip, const int32_t &port);
+    Status DeleteBroker(const std::string &ip, const int32_t &port);
 private:
-    std::map<uint32_t, BrokerInfo*> _brokers;
+    std::map<uint32_t, std::shared_ptr<BrokerInfo>> _brokers;
 };
 
 }

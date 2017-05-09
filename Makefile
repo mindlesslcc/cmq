@@ -47,7 +47,7 @@ BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test
 TEST_OBJ = src/broker/messages.o
 
-BIN = $(BINDIR)/broker $(BINDIR)/master
+BIN = $(BINDIR)/broker $(BINDIR)/master $(BINDIR)/mq_client
 
 .PHONY:all
 
@@ -60,7 +60,7 @@ $(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ)
 	echo $(MASTER_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/mq_test: $(PROTO_OBJ) $(TEST_OBJ)
+$(BINDIR)/mq_client : $(PROTO_OBJ) $(CLIENT_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)

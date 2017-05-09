@@ -24,12 +24,11 @@ namespace mq {
 class MasterServiceImpl final : public mq::Service {
 public:
     MasterServiceImpl();
-    ::grpc::Status Subscribe(ServerContext* context, const SubscribeRequest* request, SubscribeResponse* response) override;
-    ::grpc::Status Publish(ServerContext* context, const PublishRequest* request, PublishResponse* response) override;
+    ::grpc::Status GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) override;
     ::grpc::Status Register(ServerContext* context, const RegisterRequest* request, RegisterResponse* response) override;
     ::grpc::Status UnRegister(ServerContext* context, const UnRegisterRequest* request, UnRegisterResponse* response) override;
 private:
-    BrokerManager *_brokers;
+    std::shared_ptr<BrokerManager> _brokers;
 };
 
 }

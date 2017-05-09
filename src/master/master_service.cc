@@ -13,16 +13,16 @@
 
 namespace mq {
 MasterServiceImpl::MasterServiceImpl() {
-    _brokers = new BrokerManager;
+    _brokers = std::make_shared<BrokerManager>();
 }
 
-::grpc::Status MasterServiceImpl::Subscribe(ServerContext* context, const SubscribeRequest* request, SubscribeResponse* response) {
-    response->set_status(s_ok);
-    return ::grpc::Status::OK;
-}
-
-::grpc::Status MasterServiceImpl::Publish(ServerContext* context, const PublishRequest* request, PublishResponse* response) {
-    response->set_status(s_ok);
+::grpc::Status MasterServiceImpl::GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) {
+    LOG(INFO)<<"get broker request from " << request->topic()<<std::endl;
+    
+    BrokerInfo *broker = new BrokerInfo;
+    Status status = _brokers->FindBroker(request->topic(), broker);
+    response->set_allocated_broker_info(broker);
+    response->set_status(status);
     return ::grpc::Status::OK;
 }
 

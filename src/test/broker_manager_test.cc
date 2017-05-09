@@ -10,10 +10,26 @@ public:
 BrokerManagerTest(){}
 };
 
+TEST_F(BrokerManagerTest, Find) {
+    BrokerManager m;
+    const std::string topic = "topic";
+    const std::string ip = "127.0.0.1";
+    const int32_t port = 10000;
+    BrokerInfo *broker = new BrokerInfo;
+    ASSERT_EQ(m.FindBroker(topic, broker), s_notfind);
+    ASSERT_EQ(m.AddBroker(ip, port), s_ok);
+    ASSERT_EQ(m.FindBroker(topic, broker), s_ok);
+    ASSERT_EQ(broker->ip(), ip);
+    ASSERT_EQ(broker->port(), port);
+    ASSERT_EQ(m.DeleteBroker(ip, port), s_ok);
+}
+
 TEST_F(BrokerManagerTest, AddDel) {
-    BrokerManager *m = new BrokerManager;
-    ASSERT_EQ(m->AddBroker("127.0.0.1", 10000), s_ok);
-    ASSERT_EQ(m->DeleteBroker("127.0.0.1", 10000), s_ok);
+    BrokerManager m;
+    const std::string ip = "127.0.0.1";
+    const int32_t port = 10000;
+    ASSERT_EQ(m.AddBroker(ip, port), s_ok);
+    ASSERT_EQ(m.DeleteBroker(ip, port), s_ok);
 }
 
 }
