@@ -3,6 +3,28 @@ import "common.proto";
 
 package mq;
 
+message SubscribeRequest
+{
+    string topic = 1;
+}
+
+message SubscribeResponse
+{
+    Status status = 1;
+    string message = 2;
+}
+
+message PublishRequest
+{
+    string topic = 1;
+    string message = 2;
+}
+
+message PublishResponse
+{
+    Status status = 1;
+}
+
 message PutRequest
 {
     string topic = 1;
@@ -26,6 +48,8 @@ message GetResponse
 }
 
 service broker {
+    rpc Subscribe (SubscribeRequest) returns (stream SubscribeResponse);
+    rpc Publish (PublishRequest) returns (PublishResponse);
     rpc Put (PutRequest) returns (PutResponse);
     rpc Get (GetRequest) returns (GetResponse);
 }

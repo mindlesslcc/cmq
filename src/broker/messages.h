@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <memory>
 
+#include "common.pb.h"
+
 namespace mq {
 
 struct Message
@@ -27,8 +29,8 @@ public:
     Messages(): _m(), _c(), _mq()
     {}
 
-    grpc::Status put(std::string topic, std::string message);
-    grpc::Status get(std::string topic, std::string *message);
+    Status put(std::string topic, std::string message);
+    Status get(std::string topic, std::string *message);
 
 private:
     std::mutex _m;

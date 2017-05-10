@@ -9,6 +9,13 @@ message BrokerInfo
     ServerStatus status = 3;
 }
 
+message ClientInfo
+{
+    string ip = 1;
+    int32 port = 2;
+    ServerStatus status = 3;
+}
+
 enum Status
 {
     s_ok = 0;

@@ -17,6 +17,7 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
+using grpc::ServerWriter;
 using mq::PutRequest;
 using mq::PutResponse;
 using mq::GetRequest;
@@ -59,17 +60,35 @@ Status BrokerServiceImpl::Register() {
     return status;
 }
 
+::grpc::Status BrokerServiceImpl::Subscribe(ServerContext* context, const SubscribeRequest* request,
+                  ServerWriter<SubscribeResponse>* writer) {
+    SubscribeResponse resp;
+    for (int i=0;i<10;i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        resp.set_message("subr");
+        writer->Write(resp);
+    }
+    return ::grpc::Status::OK;
+}
+
+::grpc::Status BrokerServiceImpl::Publish(ServerContext* context, const PublishRequest* request,
+                  PublishResponse* response) {
+    Status status = _mq.put(request->topic(), request->message());
+    response->set_status(status);
+    return ::grpc::Status::OK;
+}
+
 ::grpc::Status BrokerServiceImpl::Put(ServerContext* context, const PutRequest* request,
               PutResponse* response) {
-    response->set_status(s_ok);
-    _mq.put(request->topic(), request->message());
+    Status status = _mq.put(request->topic(), request->message());
+    response->set_status(status);
     return ::grpc::Status::OK;
 }
 
 ::grpc::Status BrokerServiceImpl::Get(ServerContext* context, const GetRequest* request, GetResponse* response) {
     std::string message;
-    _mq.get(request->topic(), &message);
-    response->set_status(s_ok);
+    Status status = _mq.get(request->topic(), &message);
+    response->set_status(status);
     response->set_message(message);
     return ::grpc::Status::OK;
 }
