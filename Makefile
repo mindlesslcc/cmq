@@ -1,5 +1,3 @@
-subdir = ./
-
 # OPT config
 # OPT ?= -O2 -DNDEBUG # (A) Production use (optimized mode)
 OPT ?= -g2 -Werror # (B) Debug mode, w/ full line-level debugging symbols
@@ -16,10 +14,8 @@ LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GTEST_PATH)/lib -lgtest \
 		  `pkg-config --libs grpc++ grpc` \
 		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread -lglog 
-SOURCES = $(wildcard $(subdir)*.cc)
-SRCOBJS = $(patsubst %.cc,%.o,$(SOURCES))
 CXX=g++
-CXXFLAGS = -g -std=c++11 -Wall $(OPT)
+CXXFLAGS = -std=c++11 -Wall $(OPT)
 
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
@@ -41,8 +37,6 @@ MASTER_OBJ = $(patsubst %.cc, %.o, $(MASTER_SRC))
 MASTER_HEADER = $(wildcard src/master/*.h)
 
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
-UTIL_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
-BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
 TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test
 TEST_OBJ = src/broker/messages.o
@@ -90,6 +84,3 @@ clean:
 	find . -name "*.pb.h" | xargs rm -f
 	find . -name "*.pb.cc" | xargs rm -f
 	rm -f bin/*
-
-test:
-	echo "test OK"
