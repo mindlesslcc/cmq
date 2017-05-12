@@ -31,6 +31,7 @@ public:
 
     Status put(std::string topic, std::string message);
     Status get(std::string topic, std::string *message);
+    Status has(std::string topic);
 
 private:
     std::mutex _m;

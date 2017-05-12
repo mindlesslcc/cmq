@@ -7,6 +7,7 @@
 #include <grpc++/grpc++.h>
 #include <gflags/gflags.h>
 
+using grpc::ClientReader;
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
@@ -31,7 +32,7 @@ Status BrokerClient::Put(std::string topic, std::string message) {
     return resp.status();
 }
 
-Status BrokerClient::Get(std::string topic) {
+Status BrokerClient::Get(std::string topic, std::string *message) {
     // Data we are sending to the server.
     GetRequest req;
     req.set_topic(topic);
@@ -45,10 +46,32 @@ Status BrokerClient::Get(std::string topic) {
         return s_notok;
     }
 
+    if (message) {
+        *message = resp.message();
+    }
+
     return resp.status();
 }
 
 Status BrokerClient::Subscribe(std::string topic) {
+    // Data we are sending to the server.
+    SubscribeRequest req;
+    req.set_topic(topic);
+    SubscribeResponse resp;
+    ClientContext context;
+
+    std::unique_ptr<ClientReader<SubscribeResponse> > reader(
+        stub_->Subscribe(&context, req));
+    while (reader->Read(&resp)) {
+      std::cout << "get message" <<resp.message() << std::endl;
+    }
+    ::grpc::Status status = reader->Finish();
+    if (status.ok()) {
+      std::cout << "ListFeatures rpc succeeded." << std::endl;
+    } else {
+      std::cout << "ListFeatures rpc failed." << std::endl;
+    }
+
     return s_ok;
 }
 

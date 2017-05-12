@@ -21,7 +21,7 @@ public:
       : stub_(broker::NewStub(channel)) {}
 
     Status Put(std::string topic, std::string message);
-    Status Get(std::string topic);
+    Status Get(std::string topic, std::string *message);
     Status Subscribe(std::string topic);
     Status Publish(std::string topic, std::string message);
 

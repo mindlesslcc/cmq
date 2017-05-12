@@ -25,7 +25,7 @@ static void SignalIntHandler(int sig)
 }
 
 void RunServer() {
-  std::string server_address("0.0.0.0:50051");
+  std::string server_address(FLAGS_server);
   mq::BrokerServiceImpl service;
 
   ServerBuilder builder;

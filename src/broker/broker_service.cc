@@ -63,10 +63,18 @@ Status BrokerServiceImpl::Register() {
 ::grpc::Status BrokerServiceImpl::Subscribe(ServerContext* context, const SubscribeRequest* request,
                   ServerWriter<SubscribeResponse>* writer) {
     SubscribeResponse resp;
-    for (int i=0;i<10;i++) {
+    std::string topic = request->topic();
+    std::string message;
+    while(true) {
+        if (_mq.has(topic) == s_ok) {
+            _mq.get(topic, &message);
+            LOG(INFO)<<"there is "<<topic<<":"<<message<<std::endl;
+            resp.set_message(message);
+            writer->Write(resp);
+        } else {
+            LOG(INFO)<<"there is not "<<topic<<"message"<<std::endl;
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        resp.set_message("subr");
-        writer->Write(resp);
     }
     return ::grpc::Status::OK;
 }
@@ -80,14 +88,23 @@ Status BrokerServiceImpl::Register() {
 
 ::grpc::Status BrokerServiceImpl::Put(ServerContext* context, const PutRequest* request,
               PutResponse* response) {
+    LOG(INFO)<<"get request Put "<<request->topic()<<":"<<request->message()<<std::endl;
     Status status = _mq.put(request->topic(), request->message());
+    if (status != s_ok)
+        LOG(INFO)<<"put message "<<request->topic()<<":"<<request->message()<<" Failed!!"<<std::endl;
     response->set_status(status);
     return ::grpc::Status::OK;
 }
 
 ::grpc::Status BrokerServiceImpl::Get(ServerContext* context, const GetRequest* request, GetResponse* response) {
     std::string message;
+
+    LOG(INFO)<<"get client request topic "<<request->topic()<<"return"<<message;
     Status status = _mq.get(request->topic(), &message);
+
+    if (status != s_ok)
+        LOG(INFO)<<"get client request topic "<<request->topic()<<"Failed!"<<std::endl;;
+
     response->set_status(status);
     response->set_message(message);
     return ::grpc::Status::OK;

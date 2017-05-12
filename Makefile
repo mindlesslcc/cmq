@@ -59,7 +59,7 @@ $(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ)
 $(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/client : $(PROTO_OBJ) $(CLIENT_OBJ)
+$(BINDIR)/client : $(CLIENT_OBJ) $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
@@ -83,7 +83,7 @@ $(MASTER_OBJ): $(MASTER_HEADER)
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=$(PROTOS_PATH) $<
 
 %.o:%.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG) $(LDFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG)  -c $< $(LDFLAGS) -o $@
 
 clean:
 	find . -name "*.o" | xargs rm -f
