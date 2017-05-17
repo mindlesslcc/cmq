@@ -12,12 +12,9 @@ MessagesTest(){}
 
 TEST_F(MessagesTest, setget) {
     std::string message;
-    ::grpc::Status status;
     Messages *m = new Messages();
-    status = m->put("topic1", "message1");
-    ASSERT_EQ(status.ok(), true);
-    status = m->get("topic1", &message);
-    ASSERT_EQ(status.ok(), true);
+    ASSERT_EQ(m->put("topic1", "message1"), s_ok);
+    ASSERT_EQ(m->get("topic1", &message), s_ok);
     ASSERT_EQ(message, "message1");
 }
 

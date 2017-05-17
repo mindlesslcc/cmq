@@ -88,7 +88,7 @@ Status BrokerServiceImpl::Register() {
 
 ::grpc::Status BrokerServiceImpl::Put(ServerContext* context, const PutRequest* request,
               PutResponse* response) {
-    LOG(INFO)<<"get request Put "<<request->topic()<<":"<<request->message()<<std::endl;
+    //LOG(INFO)<<"get request Put "<<request->topic()<<":"<<request->message()<<std::endl;
     Status status = _mq.put(request->topic(), request->message());
     if (status != s_ok)
         LOG(INFO)<<"put message "<<request->topic()<<":"<<request->message()<<" Failed!!"<<std::endl;
@@ -99,7 +99,7 @@ Status BrokerServiceImpl::Register() {
 ::grpc::Status BrokerServiceImpl::Get(ServerContext* context, const GetRequest* request, GetResponse* response) {
     std::string message;
 
-    LOG(INFO)<<"get client request topic "<<request->topic()<<"return"<<message;
+    //LOG(INFO)<<"get client request topic "<<request->topic()<<"return"<<message;
     Status status = _mq.get(request->topic(), &message);
 
     if (status != s_ok)

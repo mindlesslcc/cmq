@@ -8,8 +8,8 @@
 #include <grpc++/grpc++.h>
 #include <gflags/gflags.h>
 
-#include "mq_client.h"
-#include "broker_client.h"
+#include "sdk/mq_client.h"
+#include "sdk/broker_client.h"
 
 DECLARE_string(flagfile);
 DEFINE_string(master, "127.0.0.1:10000", "");

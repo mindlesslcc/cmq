@@ -7,6 +7,7 @@ include depends.mk
 
 ROOTDIR = $(shell pwd)
 BINDIR  = $(ROOTDIR)/bin
+LIBDIR  = $(ROOTDIR)/lib
 TESTDIR  = $(ROOTDIR)/src/test
 INCLUDE_FLAG = -I./src -I./include -I. -I./src/proto -I$(BOOST_PATH)
 LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
@@ -37,15 +38,18 @@ MASTER_OBJ = $(patsubst %.cc, %.o, $(MASTER_SRC))
 MASTER_HEADER = $(wildcard src/master/*.h)
 
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
+SDK_OBJ = $(patsubst %.cc, %.o, $(wildcard src/sdk/*.cc))
+BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 
 TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test
 TEST_OBJ = src/broker/messages.o
 
-BIN = $(BINDIR)/broker $(BINDIR)/master $(BINDIR)/client
+LIB = $(LIBDIR)/libmq.a
+BIN = $(BINDIR)/broker $(BINDIR)/master $(BINDIR)/client $(BINDIR)/benchmark
 
 .PHONY:all
 
-all: $(BIN) $(TEST)
+all: $(LIB) $(BIN) $(TEST)
 
 $(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
@@ -53,10 +57,10 @@ $(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ)
 $(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/client : $(CLIENT_OBJ) $(PROTO_OBJ)
+$(BINDIR)/client : $(CLIENT_OBJ) $(LIBDIR)/libmq.a
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/benchmark: $(PROTO_OBJ) $(BENCH_OBJ)
+$(BINDIR)/benchmark: $(BENCH_OBJ) $(LIBDIR)/libmq.a
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PROTO_OBJ)
@@ -64,6 +68,9 @@ $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PRO
 
 $(BINDIR)/broker_manager_test : $(TESTDIR)/broker_manager_test.o src/master/broker_manager.o $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(LIBDIR)/libmq.a : $(PROTO_OBJ)  $(SDK_OBJ)
+	$(AR) -rs $@ $^ 
 
 # Headers Depends
 $(BROKER_OBJ) $(MASTER_OBJ) : $(PROTO_HEADER)
@@ -84,3 +91,4 @@ clean:
 	find . -name "*.pb.h" | xargs rm -f
 	find . -name "*.pb.cc" | xargs rm -f
 	rm -f bin/*
+	rm -f lib/*
