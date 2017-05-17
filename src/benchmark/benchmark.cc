@@ -1,92 +1,74 @@
 #include <iostream>
-#include <memory>
+#include <time.h>
 #include <string>
-#include<sys/time.h>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include <memory>
 
 #include <grpc++/grpc++.h>
+#include <gflags/gflags.h>
 
-#include "proto/mq.grpc.pb.h"
+#include "sdk/mq_client.h"
+#include "sdk/broker_client.h"
 
-using grpc::Channel;
-using grpc::ClientContext;
-using grpc::Status;
-using mq::PutRequest;
-using mq::PutResponse;
-using mq::GetRequest;
-using mq::GetResponse;
+DECLARE_string(flagfile);
+DEFINE_string(master, "127.0.0.1:10000", "");
 
-class MQClient {
- public:
-  MQClient(std::shared_ptr<Channel> channel)
-      : stub_(mq::mq::NewStub(channel)) {}
-
-  std::string Put(const std::string& topic, const std::string &message) {
-    // Data we are sending to the server.
-    PutRequest req;
-    req.set_topic(topic);
-    req.set_message(message);
-    PutResponse resp;
-    ClientContext context;
-
-    // The actual RPC.
-    Status status = stub_->Put(&context, req, &resp);
-
-    // Act upon its status.
-    if (status.ok()) {
-      return "OK";
-    } else {
-      std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-      return "RPC failed";
-    }
-  }
-
-    std::string Get(const std::string& topic, const std::string *message) {
-        // Data we are sending to the server.
-        GetRequest req;
-        req.set_topic(topic);
-        GetResponse resp;
-        ClientContext context;
-
-        // The actual RPC.
-        Status status = stub_->Get(&context, req, &resp);
-
-        // Act upon its status.
-        if (status.ok()) {
-            return resp.message();
-        } else {
-            std::cout << status.error_code() << ": " << status.error_message()
-                << std::endl;
-            return "RPC failed";
-        }
-    }
-
- private:
-  std::unique_ptr<mq::mq::Stub> stub_;
-};
+static std::string UsageString = "";
 
 int main(int argc, char** argv) {
-    struct timeval t1,t2;
-    MQClient mq(grpc::CreateChannel(
-      "localhost:50051", grpc::InsecureChannelCredentials()));
+    if (FLAGS_flagfile == "") {
+        FLAGS_flagfile = "conf/mq.conf";
+    }
+
+    //parse flags
+    google::SetVersionString("0.1");
+    google::SetUsageMessage(UsageString);
+    google::ParseCommandLineFlags(&argc, &argv, true);
+
+    // create mqclient and broker client
+    mq::MQClient mq(grpc::CreateChannel(
+      FLAGS_master, grpc::InsecureChannelCredentials()));
+
+    clock_t start, end;
     std::string topic("topic");
     std::string message("message");
-
-    gettimeofday(&t1, NULL);
-    //put message
-    for (int i=0;i<100000;i++) {
-        std::string reply = mq.Put(topic, message);
+    mq::BrokerInfo broker;
+    mq::Status status = mq.GetBroker(topic, broker);
+    if (status == mq::s_notok) {
+        std::cout << "get broker failed" << std::endl;
+        return 0;
+    } else if (status == mq::s_notfind){
+        std::cout<<"there is no broker"<<std::endl;
+        return 0;
+    } else {
+        std::cout<<"get broker "<<broker.ip()<<":"<<broker.port()<<std::endl;
     }
-    gettimeofday(&t2, NULL);
-    std::cout<<"put 100000 times is " << (t2.tv_sec - t1.tv_sec)*1000 + (t2.tv_usec - t1.tv_usec)/1000 <<std::endl;
 
-    gettimeofday(&t1, NULL);
-    //get message
-    for (int i=0;i<100000;i++) {
-        mq.Get(topic, &message);
+    // create broker client
+    std::string ip = broker.ip();
+    std::ostringstream strstream;
+    int port = broker.port();
+
+    strstream<<ip<<":"<<port;
+    mq::BrokerClient brokerClient(grpc::CreateChannel(
+        strstream.str(), grpc::InsecureChannelCredentials()));
+
+    // test put
+    start = clock();
+    for (int i=0; i<10000; i++) {
+        brokerClient.Put(topic, message);
     }
-    gettimeofday(&t2, NULL);
-    std::cout<<"get 100000 times is " << (t2.tv_sec - t1.tv_sec)*1000 + (t2.tv_usec - t1.tv_usec)/1000 <<std::endl;
-
+    end = clock();
+    std::cout << "put 10000 times Runtime： " << (double)(end - start) * 1000.0 / CLOCKS_PER_SEC << " ms!" << std::endl;
+    // test get
+    start = clock();
+    for (int i=0; i<10000; i++) {
+        brokerClient.Get(topic, &message);
+    }
+    end = clock();
+    std::cout << "get 10000 tims Runtime： " << (double)(end - start) * 1000.0 / CLOCKS_PER_SEC << " ms!" << std::endl;
+    
     return 0;
 }
