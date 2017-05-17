@@ -6,14 +6,17 @@ this Distributed Message Queue consists of master and broker, master transport u
 
 Quick Start
 ---
-sh build.sh
-bin/master &
-bin/broker &
-bin/client
-put topic message
-get topic
-
-Benchmark
+    sh build.sh
+    bin/master &
+    bin/broker &
+use client
 ---
-put 10000 messages Runtime： 470.918 ms!
-get 10000 messages Runtime： 459.562 ms!
+    bin/client
+    >put topic message
+    >get topic
+
+Performance Benchmark
+---
+    CMQ running in virtual machine ubuntu-14.04, Intel(R) Core(TM) i5-4278U CPU @ 2.60GHz, APPLE SSD SD0128F 128GB
+    put 10000 messages Runtime： 470.918 ms!
+    get 10000 messages Runtime： 459.562 ms!
