@@ -15,7 +15,7 @@
 DECLARE_string(flagfile);
 DEFINE_string(master, "127.0.0.1:10000", "");
 
-static std::string UsageString = "";
+std::string UsageString = "";
 
 int main(int argc, char** argv) {
     if (FLAGS_flagfile == "") {
