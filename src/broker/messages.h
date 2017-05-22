@@ -29,6 +29,8 @@ public:
     Messages(): _m(), _c(), _mq()
     {}
 
+    Messages(Messages &m) = delete;
+
     Status put(std::string topic, std::string message);
     Status get(std::string topic, std::string *message);
     Status has(std::string topic);
