@@ -1,5 +1,7 @@
 #/bin/sh
+
 set -x -e
+
 # cmake for gflags
 WORK_DIR=`pwd`
 DEPS_SOURCE=`pwd`/thirdsrc
@@ -26,7 +28,6 @@ if [ ! -f "${DEPS_SOURCE}/CMake-3.2.1.tar.gz" ] || [ ! -f "${DEPS_SOURCE}/gflags
     tar -zxvf gtest-1.7.0.tar.gz
     tar -zxvf protobuf-3.2.0.tar.gz
     tar -zxvf glog-0.3.4.tar.gz
-    touch "${FLAG_DIR}/dl_third"
 fi
 
 cd ${DEPS_SOURCE}
@@ -77,7 +78,6 @@ if [ ! -f "${FLAG_DIR}/gtest-1.7.0" ] \
 fi
 
 # boost
-pwd
 cp boost_1_54_0/boost ${DEPS_PREFIX}/boost -rf
 
 # glog
@@ -91,7 +91,6 @@ if [ ! -f "${FLAG_DIR}/glog-0.3.4" ] \
     cd -
     touch "${FLAG_DIR}/glog-0.3.4"
 fi
-
 
 cd ${WORK_DIR}
 
