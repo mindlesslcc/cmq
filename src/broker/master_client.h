@@ -20,8 +20,10 @@ namespace mq {
 
 class MasterClient {
 public:
-    MasterClient(std::shared_ptr<Channel> channel)
+    explicit MasterClient(std::shared_ptr<Channel> channel)
       : stub_(mq::NewStub(channel)) {}
+
+    MasterClient(MasterClient &mClient) = delete;
 
     Status Register(const std::string& ip, const int32_t port);
     Status UnRegister(const std::string& ip, const int32_t port);

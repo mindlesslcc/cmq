@@ -17,6 +17,7 @@ namespace mq {
 
 class BrokerManager {
 public:
+    explicit BrokerManager() : _brokers() {}
     Status FindBroker(const std::string &topic, BrokerInfo *);
     Status AddBroker(const std::string &ip, const int32_t &port);
     Status DeleteBroker(const std::string &ip, const int32_t &port);

@@ -28,18 +28,6 @@ DECLARE_string(server);
 
 namespace mq {
 
-BrokerServiceImpl::BrokerServiceImpl() {
-    _master_client = new MasterClient(grpc::CreateChannel(
-      FLAGS_master, grpc::InsecureChannelCredentials()));
-
-    LOG(INFO)<<"blockserver will register\n";
-    Register();
-}
-
-BrokerServiceImpl::~BrokerServiceImpl() {
-    delete _master_client;
-}
-
 Status BrokerServiceImpl::Register() {
     // parse args
     std::string server = FLAGS_server;

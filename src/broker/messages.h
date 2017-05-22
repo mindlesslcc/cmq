@@ -26,7 +26,7 @@ public:
 class Messages
 {
 public:
-    Messages(): _m(), _c(), _mq()
+    explicit Messages(): _m(), _c(), _mq()
     {}
 
     Messages(Messages &m) = delete;

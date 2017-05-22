@@ -17,8 +17,9 @@ namespace mq {
 
 class BrokerClient {
 public:
-    BrokerClient(std::shared_ptr<Channel> channel)
+    explicit BrokerClient(std::shared_ptr<Channel> channel)
       : stub_(broker::NewStub(channel)) {}
+    BrokerClient(BrokerClient &client) = delete;
 
     Status Put(std::string topic, std::string message);
     Status Get(std::string topic, std::string *message);

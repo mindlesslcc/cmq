@@ -12,9 +12,6 @@
 #include "proto/master.grpc.pb.h"
 
 namespace mq {
-MasterServiceImpl::MasterServiceImpl() {
-    _brokers = std::make_shared<BrokerManager>();
-}
 
 ::grpc::Status MasterServiceImpl::GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) {
     LOG(INFO)<<"get broker request from " << request->topic()<<std::endl;

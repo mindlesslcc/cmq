@@ -21,8 +21,21 @@ namespace mq {
 
 class BrokerServiceImpl final : public broker::Service {
 public:
-    BrokerServiceImpl();
-    ~BrokerServiceImpl();
+    explicit BrokerServiceImpl() : _master_client(NULL), _mq(), _subscribers()
+    {    _master_client = new MasterClient(grpc::CreateChannel(
+        FLAGS_master, grpc::InsecureChannelCredentials()));
+        Register();
+    }
+
+    BrokerServiceImpl(BrokerServiceImpl& impl) = delete;
+
+    ~BrokerServiceImpl()
+    {
+        if (_master_client) {
+            delete _master_client;
+        }
+    }
+
     ::grpc::Status Subscribe(ServerContext* context, const SubscribeRequest* request, ServerWriter<SubscribeResponse>* writer) override;
     ::grpc::Status Publish(ServerContext* context, const PublishRequest* request,
                   PublishResponse* response) override;

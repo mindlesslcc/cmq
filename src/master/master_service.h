@@ -23,7 +23,9 @@ namespace mq {
 
 class MasterServiceImpl final : public mq::Service {
 public:
-    MasterServiceImpl();
+    explicit MasterServiceImpl() : _brokers(NULL) {
+        _brokers = std::make_shared<BrokerManager>();
+    }
     ::grpc::Status GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) override;
     ::grpc::Status Register(ServerContext* context, const RegisterRequest* request, RegisterResponse* response) override;
     ::grpc::Status UnRegister(ServerContext* context, const UnRegisterRequest* request, UnRegisterResponse* response) override;
