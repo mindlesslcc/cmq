@@ -21,10 +21,10 @@ public:
       : stub_(broker::NewStub(channel)) {}
     BrokerClient(BrokerClient &client) = delete;
 
-    Status Put(std::string topic, std::string message);
-    Status Get(std::string topic, std::string *message);
-    Status Subscribe(std::string topic);
-    Status Publish(std::string topic, std::string message);
+    Status Put(const std::string & topic, const std::string & message);
+    Status Get(const std::string & topic, std::string *message);
+    Status Subscribe(const std::string & topic);
+    Status Publish(const std::string & topic, const std::string & message);
 
 private:
     std::unique_ptr<broker::Stub> stub_;

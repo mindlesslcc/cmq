@@ -8,20 +8,20 @@ using std::unordered_map;
 
 namespace mq {
 
-Status Messages::put(std::string topic, std::string message) {
+Status Messages::put(const std::string & topic, const std::string & message) {
     std::lock_guard<std::mutex> lk(_m);
     _mq[topic] = message;
     return s_ok;
 }
 
-Status Messages::get(std::string topic, std::string *message) {
+Status Messages::get(const std::string & topic, std::string *message) {
     std::lock_guard<std::mutex> lk(_m);
     *message = _mq[topic];
     _mq.erase(topic);
     return s_ok;
 }
 
-Status Messages::has(std::string topic) {
+Status Messages::has(const std::string & topic) {
     std::lock_guard<std::mutex> lk(_m);
     std::unordered_map<std::string, std::string>::iterator it;
     it = _mq.find(topic);

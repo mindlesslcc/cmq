@@ -14,7 +14,7 @@ using grpc::Status;
 
 namespace mq {
 
-Status BrokerClient::Put(std::string topic, std::string message) {
+Status BrokerClient::Put(const std::string & topic, const std::string & message) {
     // Data we are sending to the server.
     PutRequest req;
     req.set_topic(topic);
@@ -32,7 +32,7 @@ Status BrokerClient::Put(std::string topic, std::string message) {
     return resp.status();
 }
 
-Status BrokerClient::Get(std::string topic, std::string *message) {
+Status BrokerClient::Get(const std::string & topic, std::string *message) {
     // Data we are sending to the server.
     GetRequest req;
     req.set_topic(topic);
@@ -53,7 +53,7 @@ Status BrokerClient::Get(std::string topic, std::string *message) {
     return resp.status();
 }
 
-Status BrokerClient::Subscribe(std::string topic) {
+Status BrokerClient::Subscribe(const std::string & topic) {
     // Data we are sending to the server.
     SubscribeRequest req;
     req.set_topic(topic);
@@ -75,7 +75,7 @@ Status BrokerClient::Subscribe(std::string topic) {
     return s_ok;
 }
 
-Status BrokerClient::Publish(std::string topic, std::string message) {
+Status BrokerClient::Publish(const std::string & topic, const std::string & message) {
     // Data we are sending to the server.
     PublishRequest req;
     req.set_topic(topic);

@@ -31,9 +31,9 @@ public:
 
     Messages(Messages &m) = delete;
 
-    Status put(std::string topic, std::string message);
-    Status get(std::string topic, std::string *message);
-    Status has(std::string topic);
+    Status put(const std::string & topic, const std::string & message);
+    Status get(const std::string & topic, std::string *message);
+    Status has(const std::string & topic);
 
 private:
     std::mutex _m;
