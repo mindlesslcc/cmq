@@ -19,11 +19,11 @@ class MQClient {
 public:
     explicit MQClient(std::shared_ptr<Channel> channel)
       : stub_(mq::NewStub(channel)) {}
-    MQClient(MQClient &client) = delete;
 
     Status GetBroker(const std::string& topic, BrokerInfo &brokerInfo);
 
 private:
+    MQClient(MQClient &client);
     std::unique_ptr<mq::mq::Stub> stub_;
 };
 

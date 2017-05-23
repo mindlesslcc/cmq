@@ -19,7 +19,6 @@ class BrokerClient {
 public:
     explicit BrokerClient(std::shared_ptr<Channel> channel)
       : stub_(broker::NewStub(channel)) {}
-    BrokerClient(BrokerClient &client) = delete;
 
     Status Put(const std::string & topic, const std::string & message);
     Status Get(const std::string & topic, std::string *message);
@@ -27,6 +26,7 @@ public:
     Status Publish(const std::string & topic, const std::string & message);
 
 private:
+    BrokerClient(BrokerClient &client);
     std::unique_ptr<broker::Stub> stub_;
 };
 

@@ -10,10 +10,14 @@
 #include "proto/broker.grpc.pb.h"
 
 namespace mq {
-    class MQSdk {
-        Status Subscribe(std::string topic);
-        Status Publish(std::string topic, std::string message);
-        bool HasMessage(std::string topic);
+    
+class MQSdk {
+public:
+    Status Subscribe(std::string topic);
+    Status Publish(std::string topic, std::string message);
+    bool HasMessage(std::string topic);
+private:
+    MQSdk(MQSdk &sdk);
     };
 }
 

@@ -28,8 +28,6 @@ public:
         Register();
     }
 
-    BrokerServiceImpl(BrokerServiceImpl& impl) = delete;
-
     ~BrokerServiceImpl()
     {
         if (_master_client) {
@@ -44,6 +42,7 @@ public:
                   PutResponse* response) override;
     ::grpc::Status Get(ServerContext* context, const GetRequest* request, GetResponse* response) override;
 private:
+    BrokerServiceImpl(BrokerServiceImpl& impl);
     Status Register();
     
     MasterClient *_master_client;

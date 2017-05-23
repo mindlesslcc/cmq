@@ -29,13 +29,13 @@ public:
     explicit Messages(): _m(), _c(), _mq()
     {}
 
-    Messages(Messages &m) = delete;
-
     Status put(const std::string & topic, const std::string & message);
     Status get(const std::string & topic, std::string *message);
     Status has(const std::string & topic);
 
 private:
+    Messages(Messages &m) = delete;
+
     std::mutex _m;
     std::condition_variable _c;
     typedef std::queue<std::shared_ptr<Message>> queue;
