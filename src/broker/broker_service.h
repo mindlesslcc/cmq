@@ -15,7 +15,8 @@ using grpc::ServerWriter;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 
-DECLARE_string(servers);
+DECLARE_string(master);
+DECLARE_string(server);
 
 namespace mq {
 
