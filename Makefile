@@ -40,8 +40,10 @@ MASTER_HEADER = $(wildcard src/master/*.h)
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 SDK_OBJ = $(patsubst %.cc, %.o, $(wildcard src/sdk/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
+UTILS_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
 
-TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test
+TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test \
+	   $(BINDIR)/log_test
 TEST_OBJ = src/broker/messages.o
 
 LIB = $(LIBDIR)/libmq.a
@@ -67,6 +69,9 @@ $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PRO
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/broker_manager_test : $(TESTDIR)/broker_manager_test.o src/master/broker_manager.o $(PROTO_OBJ)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/log_test : $(TESTDIR)/log_test.o src/utils/log.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(LIBDIR)/libmq.a : $(PROTO_OBJ)  $(SDK_OBJ)
