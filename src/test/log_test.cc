@@ -1,5 +1,6 @@
 #include "utils/log.h"
 
+#include <fstream>
 #include <gtest/gtest.h>
 
 namespace mq {
@@ -10,10 +11,17 @@ LOGTest(){}
 };
 
 TEST_F(LOGTest, init) {
-    MQLOG(DEBUG, "hehehe");
-    //ASSERT_EQ(m->put("topic1", "message1"), s_ok);
-    //ASSERT_EQ(m->get("topic1", &message), s_ok);
-    //ASSERT_EQ(message, "message1");
+    std::fstream in;
+    std::string value;
+    std::string tmpFile = "tmp";
+    ASSERT_EQ(Log::Init(), s_ok);
+    ASSERT_EQ(Log::Init(), s_ok);
+    ASSERT_EQ(Log::SetLogFile(tmpFile), s_ok);
+    Log::log(DEBUG, "CMQ");
+    in.open("tmp", std::ostream::in);
+    in>>value;
+    ASSERT_EQ(value == ":CMQ", true);
+    remove("tmp");
 }
 
 }

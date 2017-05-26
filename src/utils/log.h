@@ -15,29 +15,27 @@ enum LOG_LEVEL {
     ERROR,
 };
 
-
 class Log {
 public:
-    explicit Log(const std::string & prefix) :_prefix(prefix) {}
+    explicit Log(const std::string & prefix) {
+        Init();
+    }
     ~Log() {
         if (_out.is_open())
             _out.close();
     }
 
-    static Log LOG;
-
     static Status Init();
     static Status SetLogFile(const std::string & file);
-    void IN (const enum LOG_LEVEL &level, const std::string &v);
+    static void log(const enum LOG_LEVEL &level, const std::string &v);
 private:
     Log();
 
-    std::string _prefix;
-    std::ofstream _out;
-    std::mutex _mu;
+    static std::string _prefix;
+    static std::ofstream _out;
+    static std::mutex _mu;
 };
 
-#define MQLOG(level, str) (Log::LOG.IN(level, str))
 
 }
 
