@@ -7,14 +7,14 @@
 
 #include <grpc++/grpc++.h>
 #include <gflags/gflags.h>
-#include <glog/logging.h>
 
 #include "proto/master.grpc.pb.h"
+#include "log/log.h"
 
 namespace mq {
 
 ::grpc::Status MasterServiceImpl::GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) {
-    LOG(INFO)<<"get broker request from " << request->topic()<<std::endl;
+    LOG(INFO, "get broker request from ", request->topic().c_str());
     
     BrokerInfo *broker = new BrokerInfo;
     Status status = _brokers->FindBroker(request->topic(), broker);
@@ -32,7 +32,7 @@ namespace mq {
         return ::grpc::Status::OK;
     }
 
-    LOG(INFO)<<ip<<":"<<port<<"register\n";
+    LOG(INFO, ip.c_str(), ":", port, "register\n");
 
     //add broker
     _brokers->AddBroker(ip, port);

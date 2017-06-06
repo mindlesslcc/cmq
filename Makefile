@@ -14,7 +14,7 @@ LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
 		  -L$(GTEST_PATH)/lib -lgtest \
 		  `pkg-config --libs grpc++ grpc` \
-		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread -lglog 
+		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread
 CXX=g++
 CXXFLAGS = -std=c++11 -Wall $(OPT)
 
@@ -40,7 +40,7 @@ MASTER_HEADER = $(wildcard src/master/*.h)
 CLIENT_OBJ = $(patsubst %.cc, %.o, $(wildcard src/client/*.cc))
 SDK_OBJ = $(patsubst %.cc, %.o, $(wildcard src/sdk/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
-UTILS_OBJ = $(patsubst %.cc, %.o, $(wildcard src/utils/*.cc))
+LOG_OBJ = $(patsubst %.cc, %.o, $(wildcard src/log/*.cc))
 
 TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test \
 	   $(BINDIR)/log_test
@@ -53,10 +53,10 @@ BIN = $(BINDIR)/broker $(BINDIR)/master $(BINDIR)/client $(BINDIR)/benchmark
 
 all: $(LIB) $(BIN) $(TEST)
 
-$(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ)
+$(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ) $(LOG_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ)
+$(BINDIR)/master: $(MASTER_OBJ) $(PROTO_OBJ) $(LOG_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/client : $(CLIENT_OBJ) $(LIBDIR)/libmq.a
@@ -71,7 +71,7 @@ $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PRO
 $(BINDIR)/broker_manager_test : $(TESTDIR)/broker_manager_test.o src/master/broker_manager.o $(PROTO_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
-$(BINDIR)/log_test : $(TESTDIR)/log_test.o src/utils/log.o
+$(BINDIR)/log_test :  $(TESTDIR)/log_test.o $(LOG_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(LIBDIR)/libmq.a : $(PROTO_OBJ)  $(SDK_OBJ)

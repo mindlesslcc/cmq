@@ -7,10 +7,10 @@
 #include <grpc++/grpc++.h>
 
 #include <gflags/gflags.h>
-#include <glog/logging.h>
 
 #include "messages.h"
 #include "broker_service.h"
+#include "log/log.h"
 
 DECLARE_string(flagfile);
 DEFINE_string(master, "127.0.0.1:10000", "message queue server master ip port");
@@ -36,7 +36,7 @@ void RunServer() {
   builder.RegisterService(&service);
   // Finally assemble the server.
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
+  LOG(INFO,  "Server listening on ", server_address.c_str());
 
   server->Wait();
 }
@@ -51,7 +51,10 @@ int main(int argc, char** argv) {
     google::SetUsageMessage(UsageString);
     google::ParseCommandLineFlags(&argc, &argv, true);
 
-    LOG(INFO) << "broker "<<FLAGS_server<<" Starting.!";
+    SetLogLevel(INFO);
+    SetLogFile("/dev/stdout");
+
+    LOG(INFO,  "broker ", FLAGS_server.c_str(), " Starting.!");
 
     RunServer();
 
@@ -62,7 +65,7 @@ int main(int argc, char** argv) {
         usleep(1000);
     }
 
-    LOG(INFO) << "broker "<<FLAGS_server<<" Existing.!";
+    LOG(INFO, "broker ", FLAGS_server.c_str(), " Existing.!");
 
     return 0;
 }

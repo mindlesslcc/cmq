@@ -1,4 +1,4 @@
-#include "utils/log.h"
+#include "log/log.h"
 
 #include <fstream>
 #include <gtest/gtest.h>
@@ -11,16 +11,17 @@ LOGTest(){}
 };
 
 TEST_F(LOGTest, init) {
+    SetLogLevel(INFO);
+    SetLogFile("tmp");
+    
     std::fstream in;
     std::string value;
     std::string tmpFile = "tmp";
-    ASSERT_EQ(Log::Init(), s_ok);
-    ASSERT_EQ(Log::Init(), s_ok);
-    ASSERT_EQ(Log::SetLogFile(tmpFile), s_ok);
-    Log::log(DEBUG, "CMQ");
+    LOG(INFO, "CMQ");
+    LogFlush();
     in.open("tmp", std::ostream::in);
     in>>value;
-    ASSERT_EQ(value == ":CMQ", true);
+    ASSERT_EQ(value == "CMQ", true);
     remove("tmp");
 }
 

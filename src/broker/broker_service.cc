@@ -8,9 +8,9 @@
 
 #include <grpc++/grpc++.h>
 #include <gflags/gflags.h>
-#include <glog/logging.h>
 
 #include "proto/broker.grpc.pb.h"
+#include "log/log.h"
 #include "messages.h"
 
 using grpc::Server;
@@ -40,7 +40,7 @@ Status BrokerServiceImpl::Register() {
     str>>ip;
     str>>port;
 
-    LOG(INFO)<<ip<<":"<<port<<"register\n";
+    LOG(INFO, ip.c_str(), ":", port, "register\n");
 
     // RPC Call.
     Status status = _master_client->Register(ip, port);
@@ -56,11 +56,11 @@ Status BrokerServiceImpl::Register() {
     while(true) {
         if (_mq.has(topic) == s_ok) {
             _mq.get(topic, &message);
-            LOG(INFO)<<"there is "<<topic<<":"<<message<<std::endl;
+            LOG(INFO, "there is ", topic.c_str(), ":", message.c_str());
             resp.set_message(message);
             writer->Write(resp);
         } else {
-            LOG(INFO)<<"there is not "<<topic<<"message"<<std::endl;
+            LOG(INFO, "there is not ", topic.c_str(), "message");
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
@@ -76,10 +76,10 @@ Status BrokerServiceImpl::Register() {
 
 ::grpc::Status BrokerServiceImpl::Put(ServerContext* context, const PutRequest* request,
               PutResponse* response) {
-    //LOG(INFO)<<"get request Put "<<request->topic()<<":"<<request->message()<<std::endl;
+    LOG(INFO, "get request Put ", request->topic().c_str(), ":", request->message().c_str());
     Status status = _mq.put(request->topic(), request->message());
     if (status != s_ok)
-        LOG(INFO)<<"put message "<<request->topic()<<":"<<request->message()<<" Failed!!"<<std::endl;
+        LOG(INFO, "put message ", request->topic().c_str(), ":", request->message().c_str(), " Failed!!");
     response->set_status(status);
     return ::grpc::Status::OK;
 }
@@ -87,11 +87,11 @@ Status BrokerServiceImpl::Register() {
 ::grpc::Status BrokerServiceImpl::Get(ServerContext* context, const GetRequest* request, GetResponse* response) {
     std::string message;
 
-    //LOG(INFO)<<"get client request topic "<<request->topic()<<"return"<<message;
+    LOG(INFO, "get client request topic ", request->topic().c_str(), "return", message.c_str());
     Status status = _mq.get(request->topic(), &message);
 
     if (status != s_ok)
-        LOG(INFO)<<"get client request topic "<<request->topic()<<"Failed!"<<std::endl;;
+        LOG(INFO, "get client request topic ", request->topic().c_str(), "Failed!");
 
     response->set_status(status);
     response->set_message(message);
