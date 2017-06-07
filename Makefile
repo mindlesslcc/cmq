@@ -16,7 +16,7 @@ LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  `pkg-config --libs grpc++ grpc` \
 		  -lgrpc++_reflection -g -ldl -lprotobuf -lpthread
 CXX=g++
-CXXFLAGS = -std=c++11 -Wall $(OPT)
+CXXFLAGS = -std=c++11 -MMD -Wall $(OPT)
 
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
 GRPC_CPP_PLUGIN_PATH ?= `which $(GRPC_CPP_PLUGIN)`
