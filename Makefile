@@ -43,7 +43,7 @@ BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 LOG_OBJ = $(patsubst %.cc, %.o, $(wildcard src/log/*.cc))
 
 TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test \
-	   $(BINDIR)/log_test
+	   $(BINDIR)/log_test $(BINDIR)/thread_test
 TEST_OBJ = src/broker/messages.o
 
 LIB = $(LIBDIR)/libmq.a
@@ -66,6 +66,9 @@ $(BINDIR)/benchmark: $(BENCH_OBJ) $(LIBDIR)/libmq.a
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/messages_test : $(TESTDIR)/messages_test.o src/broker/messages.o $(PROTO_OBJ)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+$(BINDIR)/thread_test: $(TESTDIR)/thread_test.o
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 $(BINDIR)/broker_manager_test : $(TESTDIR)/broker_manager_test.o src/master/broker_manager.o $(PROTO_OBJ)
