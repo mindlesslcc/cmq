@@ -20,3 +20,8 @@ Performance Benchmark
     CMQ running in virtual machine ubuntu-14.04, Intel(R) Core(TM) i5-4278U CPU @ 2.60GHz, APPLE SSD SD0128F 128GB
     put 10000 messages Runtime： 470.918 ms!
     get 10000 messages Runtime： 459.562 ms!
+
+TODO
+---
+    Signal handling
+    config file && hot reload config file
