@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
 #include <mutex>
+#include <condition_variable>
 #include <fstream>
+#include <queue>
 
 namespace mq {
 
@@ -18,9 +21,15 @@ typedef enum LOG_LEVEL {
 
 class LogStream {
 public:
-    explicit LogStream(LOG_LEVEL level, const char *fName) : _level(level), _of(fName, std::ofstream::app) {
+    explicit LogStream(LOG_LEVEL level, const char *fName) : _stop(false),_level(level), _of(fName, std::ofstream::app), _worker(std::bind(&LogStream::_bgWrite, this)) {
     }
     ~LogStream() {
+        _stop = true;
+        {
+            std::unique_lock<std::mutex> lock(_mu);
+
+        }
+        _worker.join();
         if (_of.is_open())
             _of.flush();
     }
@@ -40,8 +49,7 @@ public:
     }
 
     void LogFlush() {
-        if (_of.is_open())
-            _of.flush();
+        _jobs.notify_one();
     }
 
     template <class T>
@@ -49,10 +57,18 @@ public:
         _of<<t;
         return *this;
     }
+    void WriteMessage(char * msg);
 
 private:
+    void _bgWrite();
+
+    bool _stop;
     LOG_LEVEL _level;
     std::ofstream _of;
+    std::mutex _mu;
+    std::condition_variable _jobs;
+    std::queue<std::string *> *_msgQueue;
+    std::thread _worker;
 };
 
 void SetLogLevel(LOG_LEVEL level);
