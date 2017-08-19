@@ -83,7 +83,7 @@ cd ${WORK_DIR}
 
 # create depends.mk
 
-echo "PROTOBUF_PATH=./thirdparty" >> depends.mk
+echo "PROTOBUF_PATH=./thirdparty" > depends.mk
 echo "PROTOC_PATH=./thirdparty/bin/" >> depends.mk
 echo 'PROTOC=$(PROTOC_PATH)protoc' >> depends.mk
 echo "GFLAG_PATH=./thirdparty" >> depends.mk
