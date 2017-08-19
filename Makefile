@@ -8,7 +8,7 @@ include depends.mk
 ROOTDIR = $(shell pwd)
 BINDIR  = $(ROOTDIR)/bin
 LIBDIR  = $(ROOTDIR)/lib
-TESTDIR  = $(ROOTDIR)/src/test
+TESTDIR  = $(ROOTDIR)/test
 INCLUDE_FLAG = -I./src -I./include -I. -I./src/proto -I$(BOOST_PATH)
 LDFLAGS = -L$(PROTOBUF_PATH)/lib -lprotobuf \
 		  -L$(GFLAG_PATH)/lib -lgflags \
@@ -42,7 +42,7 @@ SDK_OBJ = $(patsubst %.cc, %.o, $(wildcard src/sdk/*.cc))
 BENCH_OBJ = $(patsubst %.cc, %.o, $(wildcard src/benchmark/*.cc))
 LOG_OBJ = $(patsubst %.cc, %.o, $(wildcard src/log/*.cc))
 
-TEST = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test \
+TESTS = $(BINDIR)/broker_manager_test $(BINDIR)/messages_test \
 	   $(BINDIR)/log_test $(BINDIR)/thread_test
 TEST_OBJ = src/broker/messages.o
 
@@ -51,7 +51,7 @@ BIN = $(BINDIR)/broker $(BINDIR)/master $(BINDIR)/client $(BINDIR)/benchmark
 
 .PHONY:all
 
-all: $(LIB) $(BIN) $(TEST)
+all: $(LIB) $(BIN) $(TESTS)
 
 $(BINDIR)/broker: $(BROKER_OBJ) $(PROTO_OBJ) $(LOG_OBJ)
 	$(CXX) $^ $(LDFLAGS) -o $@
@@ -93,6 +93,10 @@ $(MASTER_OBJ): $(MASTER_HEADER)
 
 %.o:%.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDE_FLAG)  -c $< $(LDFLAGS) -o $@
+
+check: all $(TESTS)
+	cd $(BINDIR)
+	for test in $(TESTS); do echo "***** Running $$test"; $$test || exit 1; done
 
 clean:
 	find . -name "*.o" | xargs rm -f
