@@ -19,9 +19,25 @@ DEFINE_string(server, "127.0.0.1:10001", "message queue server ip port");
 static std::string UsageString = "./broker conf.flag";
 
 static volatile sig_atomic_t gQuit = 0;
-static void SignalIntHandler(int sig)
+static void SignalInterruptHandler(int sig)
 {
-    gQuit = 1;
+    switch (sig) {
+        case SIGINT:
+        case SIGTERM:
+        case SIGQUIT:
+            gQuit = true;
+            break;
+        case SIGSEGV:
+        case SIGILL:
+        case SIGABRT:
+        case SIGFPE:
+            signal(SIGABRT, SIG_DFL);
+            //LOG("deading\n");
+            abort();
+            break;
+        default:
+            break;
+    }
 }
 
 void RunServer() {
@@ -59,8 +75,14 @@ int main(int argc, char** argv) {
     RunServer();
 
     //signal
-    signal(SIGINT, SignalIntHandler);
-    signal(SIGTERM, SignalIntHandler);
+    signal(SIGINT, SignalInterruptHandler);
+    signal(SIGTERM, SignalInterruptHandler);
+    signal(SIGQUIT, SignalInterruptHandler);
+
+    signal(SIGSEGV, SignalInterruptHandler);
+    signal(SIGILL, SignalInterruptHandler);
+    signal(SIGABRT, SignalInterruptHandler);
+    signal(SIGFPE, SignalInterruptHandler);
     while (!gQuit) {
         usleep(1000);
     }

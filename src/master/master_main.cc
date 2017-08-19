@@ -4,18 +4,37 @@
 #include <string>
 
 #include <grpc++/grpc++.h>
-
 #include <gflags/gflags.h>
 
 #include "proto/master.grpc.pb.h"
-
 #include "master_service.h"
 
 DECLARE_string(flagfile);
 DEFINE_string(master,"127.0.0.1:10000", "servers");
 DEFINE_string(server,"127.0.0.1:10001", "servers");
 
+static volatile sig_atomic_t gQuit = false;
 static std::string UsageString = "./broker conf.flag";
+
+static void SignalInterruptHandler(int sig) {
+    switch (sig) {
+        case SIGINT:
+        case SIGTERM:
+        case SIGQUIT:
+            gQuit = true;
+            break;
+        case SIGSEGV:
+        case SIGILL:
+        case SIGABRT:
+        case SIGFPE:
+            signal(SIGABRT, SIG_DFL);
+            //LOG("deading\n");
+            abort();
+            break;
+        default:
+            break;
+    }
+}
 
 void RunServer() {
   std::string server_address(FLAGS_master);
@@ -39,10 +58,19 @@ int main(int argc, char** argv) {
         FLAGS_flagfile = "conf/mq.conf";
     }
 
-    //parse flags
-    google::SetVersionString("1.0");
+    google::SetVersionString("0.1");
     google::SetUsageMessage(UsageString);
     google::ParseCommandLineFlags(&argc, &argv, true);
+    
+    signal(SIGINT, SignalInterruptHandler);
+    signal(SIGTERM, SignalInterruptHandler);
+    signal(SIGQUIT, SignalInterruptHandler);
+
+    signal(SIGSEGV, SignalInterruptHandler);
+    signal(SIGILL, SignalInterruptHandler);
+    signal(SIGABRT, SignalInterruptHandler);
+    signal(SIGFPE, SignalInterruptHandler);
+    
     RunServer();
 
     return 0;
