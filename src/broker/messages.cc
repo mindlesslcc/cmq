@@ -6,7 +6,7 @@
 
 using std::unordered_map;
 
-namespace mq {
+namespace cmq {
 
 Status Messages::put(const std::string & topic, const std::string & message) {
     std::lock_guard<std::mutex> lk(_m);

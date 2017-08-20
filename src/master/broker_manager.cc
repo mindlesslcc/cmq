@@ -12,7 +12,7 @@
 
 #include "common.pb.h"
 
-namespace mq {
+namespace cmq {
 
 Status BrokerManager::FindBroker(const std::string &topic, BrokerInfo *brokerInfo) {
     //get hash for server
@@ -27,7 +27,7 @@ Status BrokerManager::FindBroker(const std::string &topic, BrokerInfo *brokerInf
     std::map<uint32_t, std::shared_ptr<BrokerInfo>>::iterator itr = _brokers.lower_bound(hash);
 
     if (itr != _brokers.end()) {
-        std::shared_ptr<mq::BrokerInfo> info = itr->second;
+        std::shared_ptr<cmq::BrokerInfo> info = itr->second;
         brokerInfo->set_ip(info->ip());
         brokerInfo->set_port(info->port());
         return s_ok;

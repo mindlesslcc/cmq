@@ -9,7 +9,7 @@
 #include "proto/master.grpc.pb.h"
 #include "proto/broker.grpc.pb.h"
 
-namespace mq {
+namespace cmq {
     
 class MQSdk {
 public:

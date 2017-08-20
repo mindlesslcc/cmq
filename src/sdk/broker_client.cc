@@ -12,7 +12,7 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 
-namespace mq {
+namespace cmq {
 
 Status BrokerClient::Put(const std::string & topic, const std::string & message) {
     // Data we are sending to the server.

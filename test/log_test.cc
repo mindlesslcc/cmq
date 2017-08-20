@@ -3,7 +3,7 @@
 #include <fstream>
 #include <gtest/gtest.h>
 
-namespace mq {
+namespace cmq {
 
 class LOGTest : public ::testing::Test {
 public:

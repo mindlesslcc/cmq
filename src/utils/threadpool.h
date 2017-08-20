@@ -10,7 +10,7 @@
 #include <functional>
 #include <condition_variable>
 
-namespace mq {
+namespace cmq {
 
 namespace utils {
 
@@ -71,6 +71,6 @@ std::function<void(void)> ThreadPool::NextTask() {
     return func;
 }
 } // end of namespace utils
-} // end of namespace mq
+} // end of namespace cmq
 
 #endif

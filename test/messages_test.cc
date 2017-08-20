@@ -3,7 +3,7 @@
 #include <grpc++/grpc++.h>
 #include <gtest/gtest.h>
 
-namespace mq {
+namespace cmq {
 
 class MessagesTest : public ::testing::Test {
 public:

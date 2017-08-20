@@ -18,7 +18,7 @@ using grpc::ServerContext;
 DECLARE_string(master);
 DECLARE_string(server);
 
-namespace mq {
+namespace cmq {
 
 class BrokerServiceImpl final : public broker::Service {
 public:

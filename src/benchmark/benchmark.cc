@@ -28,18 +28,18 @@ int main(int argc, char** argv) {
     google::ParseCommandLineFlags(&argc, &argv, true);
 
     // create mqclient and broker client
-    mq::MQClient mq(grpc::CreateChannel(
+    cmq::MQClient mq(grpc::CreateChannel(
       FLAGS_master, grpc::InsecureChannelCredentials()));
 
     clock_t start, end;
     std::string topic("topic");
     std::string message("message");
-    mq::BrokerInfo broker;
-    mq::Status status = mq.GetBroker(topic, broker);
-    if (status == mq::s_notok) {
+    cmq::BrokerInfo broker;
+    cmq::Status status = mq.GetBroker(topic, broker);
+    if (status == cmq::s_notok) {
         std::cout << "get broker failed" << std::endl;
         return 0;
-    } else if (status == mq::s_notfind){
+    } else if (status == cmq::s_notfind){
         std::cout<<"there is no broker"<<std::endl;
         return 0;
     } else {
@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     int port = broker.port();
 
     strstream<<ip<<":"<<port;
-    mq::BrokerClient brokerClient(grpc::CreateChannel(
+    cmq::BrokerClient brokerClient(grpc::CreateChannel(
         strstream.str(), grpc::InsecureChannelCredentials()));
 
     // test put

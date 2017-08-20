@@ -13,7 +13,7 @@
 #include "common.pb.h"
 #include "broker.pb.h"
 
-namespace mq {
+namespace cmq {
 
 class BrokerManager {
 public:

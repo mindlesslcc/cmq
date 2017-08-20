@@ -1,7 +1,7 @@
 syntax="proto3";
 import "common.proto";
 
-package mq;
+package cmq;
 
 message SubscribeRequest
 {

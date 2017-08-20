@@ -11,7 +11,7 @@
 
 #include "common.pb.h"
 
-namespace mq {
+namespace cmq {
 
 struct Message
 {

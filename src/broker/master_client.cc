@@ -13,12 +13,12 @@ DECLARE_string(master);
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using mq::RegisterRequest;
-using mq::RegisterResponse;
-using mq::UnRegisterRequest;
-using mq::UnRegisterResponse;
+using cmq::RegisterRequest;
+using cmq::RegisterResponse;
+using cmq::UnRegisterRequest;
+using cmq::UnRegisterResponse;
 
-namespace mq {
+namespace cmq {
 Status MasterClient::Register(const std::string& ip, const int32_t port) {
     // Data we are sending to the server.
     RegisterRequest req;

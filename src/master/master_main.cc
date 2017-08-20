@@ -38,7 +38,7 @@ static void SignalInterruptHandler(int sig) {
 
 void RunServer() {
   std::string server_address(FLAGS_master);
-  mq::MasterServiceImpl service;
+  cmq::MasterServiceImpl service;
 
   ServerBuilder builder;
   // Listen on the given address without any authentication mechanism.

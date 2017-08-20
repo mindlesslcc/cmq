@@ -1,6 +1,6 @@
 #include "mq_sdk.h"
 
-namespace mq {
+namespace cmq {
 
 Status MQSdk::Subscribe(std::string topic) {
     return s_ok;

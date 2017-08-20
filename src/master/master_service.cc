@@ -11,7 +11,7 @@
 #include "proto/master.grpc.pb.h"
 #include "log/log.h"
 
-namespace mq {
+namespace cmq {
 
 ::grpc::Status MasterServiceImpl::GetBroker(ServerContext* context, const GetBrokerRequest* request, GetBrokerResponse* response) {
     LOG(INFO, "get broker request from ", request->topic().c_str());

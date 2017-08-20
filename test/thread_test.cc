@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-namespace mq {
+namespace cmq {
 
 namespace utils {
 

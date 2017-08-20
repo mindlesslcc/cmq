@@ -11,24 +11,24 @@
 
 using grpc::Channel;
 using grpc::ClientContext;
-using mq::RegisterRequest;
-using mq::RegisterResponse;
-using mq::UnRegisterRequest;
-using mq::UnRegisterResponse;
+using cmq::RegisterRequest;
+using cmq::RegisterResponse;
+using cmq::UnRegisterRequest;
+using cmq::UnRegisterResponse;
 
-namespace mq {
+namespace cmq {
 
 class MasterClient {
 public:
     explicit MasterClient(std::shared_ptr<Channel> channel)
-      : stub_(mq::NewStub(channel)) {}
+      : stub_(cmq::NewStub(channel)) {}
 
     Status Register(const std::string& ip, const int32_t port);
     Status UnRegister(const std::string& ip, const int32_t port);
 
 private:
     MasterClient(MasterClient &mClient);
-    std::unique_ptr<mq::Stub> stub_;
+    std::unique_ptr<cmq::Stub> stub_;
 };
 
 }

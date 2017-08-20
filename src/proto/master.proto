@@ -1,6 +1,6 @@
 syntax="proto3";
 import "common.proto";
-package mq;
+package cmq;
 
 message GetBrokerRequest
 {
@@ -35,7 +35,7 @@ message UnRegisterResponse
     Status status = 1;
 }
 
-service mq {
+service cmq {
     rpc GetBroker (GetBrokerRequest) returns (GetBrokerResponse);
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc UnRegister (UnRegisterRequest) returns (UnRegisterResponse);

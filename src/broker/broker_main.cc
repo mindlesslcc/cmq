@@ -42,7 +42,7 @@ static void SignalInterruptHandler(int sig)
 
 void RunServer() {
   std::string server_address(FLAGS_server);
-  mq::BrokerServiceImpl service;
+  cmq::BrokerServiceImpl service;
 
   ServerBuilder builder;
   // Listen on the given address without any authentication mechanism.

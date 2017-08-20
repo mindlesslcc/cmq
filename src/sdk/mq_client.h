@@ -10,21 +10,21 @@
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using mq::GetBrokerRequest;
-using mq::GetBrokerResponse;
+using cmq::GetBrokerRequest;
+using cmq::GetBrokerResponse;
 
-namespace mq {
+namespace cmq {
 
 class MQClient {
 public:
     explicit MQClient(std::shared_ptr<Channel> channel)
-      : stub_(mq::NewStub(channel)) {}
+      : stub_(cmq::NewStub(channel)) {}
 
     Status GetBroker(const std::string& topic, BrokerInfo &brokerInfo);
 
 private:
     MQClient(MQClient &client);
-    std::unique_ptr<mq::mq::Stub> stub_;
+    std::unique_ptr<cmq::cmq::Stub> stub_;
 };
 
 }

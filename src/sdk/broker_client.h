@@ -10,10 +10,10 @@
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
-using mq::GetBrokerRequest;
-using mq::GetBrokerResponse;
+using cmq::GetBrokerRequest;
+using cmq::GetBrokerResponse;
 
-namespace mq {
+namespace cmq {
 
 class BrokerClient {
 public:

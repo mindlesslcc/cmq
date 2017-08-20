@@ -18,15 +18,15 @@ using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
 using grpc::ServerWriter;
-using mq::PutRequest;
-using mq::PutResponse;
-using mq::GetRequest;
-using mq::GetResponse;
+using cmq::PutRequest;
+using cmq::PutResponse;
+using cmq::GetRequest;
+using cmq::GetResponse;
 
 DECLARE_string(master);
 DECLARE_string(server);
 
-namespace mq {
+namespace cmq {
 
 Status BrokerServiceImpl::Register() {
     // parse args

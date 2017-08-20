@@ -19,9 +19,9 @@ using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::Status;
 
-namespace mq {
+namespace cmq {
 
-class MasterServiceImpl final : public mq::Service {
+class MasterServiceImpl final : public cmq::Service {
 public:
     explicit MasterServiceImpl() : _brokers(NULL) {
         _brokers = std::make_shared<BrokerManager>();

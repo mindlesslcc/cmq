@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     google::ParseCommandLineFlags(&argc, &argv, true);
 
     // create mqclient and broker client
-    mq::MQClient mq(grpc::CreateChannel(
+    cmq::MQClient cmq(grpc::CreateChannel(
       FLAGS_master, grpc::InsecureChannelCredentials()));
 
     while (true) {
@@ -57,12 +57,12 @@ int main(int argc, char** argv) {
                 continue;
             std::string topic(strs[1]);
             std::string message(strs[2]);
-            mq::BrokerInfo broker;
-            mq::Status status = mq.GetBroker(topic, broker);
-            if (status == mq::s_notok) {
+            cmq::BrokerInfo broker;
+            cmq::Status status = cmq.GetBroker(topic, broker);
+            if (status == cmq::s_notok) {
                 std::cout << "get broker failed" << std::endl;
                 return 0;
-            } else if (status == mq::s_notfind){
+            } else if (status == cmq::s_notfind){
                 std::cout<<"there is no broker"<<std::endl;
                 return 0;
             } else {
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
             int port = broker.port();
 
             strstream<<ip<<":"<<port;
-            mq::BrokerClient brokerClient(grpc::CreateChannel(
+            cmq::BrokerClient brokerClient(grpc::CreateChannel(
                 strstream.str(), grpc::InsecureChannelCredentials()));
 
             brokerClient.Put(topic, message);
@@ -85,12 +85,12 @@ int main(int argc, char** argv) {
                 continue;
             std::string topic(strs[1]);
             std::string message;
-            mq::BrokerInfo broker;
-            mq::Status status = mq.GetBroker(topic, broker);
-            if (status == mq::s_notok) {
+            cmq::BrokerInfo broker;
+            cmq::Status status = cmq.GetBroker(topic, broker);
+            if (status == cmq::s_notok) {
                 std::cout << "get broker failed" << std::endl;
                 return 0;
-            } else if (status == mq::s_notfind){
+            } else if (status == cmq::s_notfind){
                 std::cout<<"there is no broker"<<std::endl;
                 return 0;
             } else {
@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
             std::cout<<"get broker "<<ip<<":"<<port<<std::endl;
 
             strstream<<ip<<":"<<port;
-            mq::BrokerClient brokerClient(grpc::CreateChannel(
+            cmq::BrokerClient brokerClient(grpc::CreateChannel(
                 strstream.str(), grpc::InsecureChannelCredentials()));
 
             brokerClient.Get(topic, &message);
@@ -114,12 +114,12 @@ int main(int argc, char** argv) {
             if (strs.size() != 2)
                 continue;
             std::string topic(strs[1]);
-            mq::BrokerInfo broker;
-            mq::Status status = mq.GetBroker(topic, broker);
-            if (status == mq::s_notok) {
+            cmq::BrokerInfo broker;
+            cmq::Status status = cmq.GetBroker(topic, broker);
+            if (status == cmq::s_notok) {
                 std::cout << "get broker failed" << std::endl;
                 return 0;
-            } else if (status == mq::s_notfind){
+            } else if (status == cmq::s_notfind){
                 std::cout<<"there is no broker"<<std::endl;
                 return 0;
             } else {
@@ -132,7 +132,7 @@ int main(int argc, char** argv) {
             int port = broker.port();
 
             strstream<<ip<<":"<<port;
-            mq::BrokerClient brokerClient(grpc::CreateChannel(
+            cmq::BrokerClient brokerClient(grpc::CreateChannel(
                 strstream.str(), grpc::InsecureChannelCredentials()));
 
             brokerClient.Subscribe(topic);
